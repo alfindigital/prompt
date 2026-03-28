@@ -43,19 +43,19 @@ export function Header({ onDataChange }: HeaderProps) {
   };
 
   return (
-    <header className="flex items-center justify-between py-6">
+    <header className="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-3">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Prompt Library</h1>
-        <p className="text-sm text-muted-foreground">Your reusable prompt collection</p>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Prompt Library</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">Your reusable prompt collection</p>
       </div>
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" onClick={handleExport}>
-          <Download className="h-4 w-4 mr-1.5" />
-          Export
+          <Download className="h-4 w-4 sm:mr-1.5" />
+          <span className="hidden sm:inline">Export</span>
         </Button>
         <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
-          <Upload className="h-4 w-4 mr-1.5" />
-          Import
+          <Upload className="h-4 w-4 sm:mr-1.5" />
+          <span className="hidden sm:inline">Import</span>
         </Button>
         <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
       </div>
