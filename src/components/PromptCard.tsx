@@ -160,7 +160,7 @@ export function PromptCard({ prompt, onUpdate }: PromptCardProps) {
                 ? `Used ${new Date(prompt.last_used_at).toLocaleDateString()}`
                 : new Date(prompt.created_at).toLocaleDateString()}
             </span>
-            <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleCopy}>
                 <Copy className="h-3.5 w-3.5" />
               </Button>
