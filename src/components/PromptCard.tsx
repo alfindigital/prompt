@@ -1,0 +1,179 @@
+import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { Prompt } from "@/lib/types";
+import { updatePrompt, deletePrompt } from "@/lib/prompts-store";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Star,
+  Copy,
+  Trash2,
+  Pencil,
+  Check,
+  X,
+} from "lucide-react";
+
+interface PromptCardProps {
+  prompt: Prompt;
+  onUpdate: () => void;
+}
+
+export function PromptCard({ prompt, onUpdate }: PromptCardProps) {
+  const [editing, setEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(prompt.title);
+  const [editContent, setEditContent] = useState(prompt.content);
+  const [editTags, setEditTags] = useState(prompt.tags.join(", "));
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(prompt.content);
+    updatePrompt(prompt.id, { last_used_at: new Date().toISOString() });
+    onUpdate();
+    toast.success("Copied to clipboard");
+  };
+
+  const handleFavorite = () => {
+    updatePrompt(prompt.id, { is_favorite: !prompt.is_favorite });
+    onUpdate();
+  };
+
+  const handleDelete = () => {
+    const removed = deletePrompt(prompt.id);
+    onUpdate();
+    toast("Prompt deleted", {
+      action: {
+        label: "Undo",
+        onClick: () => {
+          if (removed) {
+            const { id, ...rest } = removed;
+            // Re-add with same data
+            const all = JSON.parse(localStorage.getItem("prompt-library-prompts") || "[]");
+            all.push(removed);
+            localStorage.setItem("prompt-library-prompts", JSON.stringify(all));
+            onUpdate();
+            toast.success("Restored");
+          }
+        },
+      },
+    });
+  };
+
+  const handleSaveEdit = () => {
+    if (!editTitle.trim() || !editContent.trim()) {
+      toast.error("Title and content are required");
+      return;
+    }
+    const tags = editTags
+      .split(",")
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean);
+    updatePrompt(prompt.id, {
+      title: editTitle.trim(),
+      content: editContent.trim(),
+      tags,
+    });
+    setEditing(false);
+    onUpdate();
+    toast.success("Prompt updated");
+  };
+
+  const handleCancelEdit = () => {
+    setEditTitle(prompt.title);
+    setEditContent(prompt.content);
+    setEditTags(prompt.tags.join(", "));
+    setEditing(false);
+  };
+
+  return (
+    <div className="group rounded-xl border bg-card p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-3">
+      {editing ? (
+        <>
+          <Input
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            className="font-medium"
+            autoFocus
+          />
+          <Textarea
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            rows={4}
+            className="resize-none text-sm"
+          />
+          <Input
+            value={editTags}
+            onChange={(e) => setEditTags(e.target.value)}
+            placeholder="Tags (comma-separated)"
+            className="text-sm"
+          />
+          <div className="flex gap-1.5 justify-end">
+            <Button size="sm" variant="ghost" onClick={handleCancelEdit}>
+              <X className="h-3.5 w-3.5 mr-1" />
+              Cancel
+            </Button>
+            <Button size="sm" onClick={handleSaveEdit}>
+              <Check className="h-3.5 w-3.5 mr-1" />
+              Save
+            </Button>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-semibold text-sm leading-snug">{prompt.title}</h3>
+            <button
+              onClick={handleFavorite}
+              className="shrink-0 mt-0.5"
+              aria-label="Toggle favorite"
+            >
+              <Star
+                className={`h-4 w-4 transition-colors ${
+                  prompt.is_favorite
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-muted-foreground hover:text-yellow-400"
+                }`}
+              />
+            </button>
+          </div>
+
+          <div className="prose-prompt text-sm line-clamp-4 overflow-hidden">
+            <ReactMarkdown>{prompt.content}</ReactMarkdown>
+          </div>
+
+          {prompt.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {prompt.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[11px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-1 border-t border-border/50">
+            <span className="text-[11px] text-muted-foreground">
+              {prompt.last_used_at
+                ? `Used ${new Date(prompt.last_used_at).toLocaleDateString()}`
+                : new Date(prompt.created_at).toLocaleDateString()}
+            </span>
+            <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleCopy}>
+                <Copy className="h-3.5 w-3.5" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditing(true)}>
+                <Pencil className="h-3.5 w-3.5" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={handleDelete}>
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
