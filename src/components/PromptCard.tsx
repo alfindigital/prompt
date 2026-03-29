@@ -1,30 +1,27 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Prompt } from "@/lib/types";
-import { updatePrompt, deletePrompt } from "@/lib/prompts-store";
+import { Prompt, Category } from "@/lib/types";
+import { updatePrompt, deletePrompt, getCategories } from "@/lib/prompts-store";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Star,
-  Copy,
-  Trash2,
-  Pencil,
-  Check,
-  X,
-} from "lucide-react";
+import { Star, Copy, Trash2, Pencil, Check, X } from "lucide-react";
 
 interface PromptCardProps {
   prompt: Prompt;
   onUpdate: () => void;
+  categories: Category[];
 }
 
-export function PromptCard({ prompt, onUpdate }: PromptCardProps) {
+export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(prompt.title);
   const [editContent, setEditContent] = useState(prompt.content);
   const [editTags, setEditTags] = useState(prompt.tags.join(", "));
+  const [editCategory, setEditCategory] = useState<string | null>(prompt.category);
+
+  const category = categories.find((c) => c.id === prompt.category);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(prompt.content);
@@ -46,8 +43,6 @@ export function PromptCard({ prompt, onUpdate }: PromptCardProps) {
         label: "Undo",
         onClick: () => {
           if (removed) {
-            const { id, ...rest } = removed;
-            // Re-add with same data
             const all = JSON.parse(localStorage.getItem("prompt-library-prompts") || "[]");
             all.push(removed);
             localStorage.setItem("prompt-library-prompts", JSON.stringify(all));
@@ -72,6 +67,7 @@ export function PromptCard({ prompt, onUpdate }: PromptCardProps) {
       title: editTitle.trim(),
       content: editContent.trim(),
       tags,
+      category: editCategory,
     });
     setEditing(false);
     onUpdate();
@@ -82,6 +78,7 @@ export function PromptCard({ prompt, onUpdate }: PromptCardProps) {
     setEditTitle(prompt.title);
     setEditContent(prompt.content);
     setEditTags(prompt.tags.join(", "));
+    setEditCategory(prompt.category);
     setEditing(false);
   };
 
@@ -101,12 +98,24 @@ export function PromptCard({ prompt, onUpdate }: PromptCardProps) {
             rows={4}
             className="resize-none text-sm"
           />
-          <Input
-            value={editTags}
-            onChange={(e) => setEditTags(e.target.value)}
-            placeholder="Tags (comma-separated)"
-            className="text-sm"
-          />
+          <div className="flex gap-2">
+            <Input
+              value={editTags}
+              onChange={(e) => setEditTags(e.target.value)}
+              placeholder="Tags (comma-separated)"
+              className="text-sm flex-1"
+            />
+            <select
+              value={editCategory || ""}
+              onChange={(e) => setEditCategory(e.target.value || null)}
+              className="text-sm rounded-md border border-input bg-background px-3 py-1.5 text-foreground"
+            >
+              <option value="">No category</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
           <div className="flex gap-1.5 justify-end">
             <Button size="sm" variant="ghost" onClick={handleCancelEdit}>
               <X className="h-3.5 w-3.5 mr-1" />
@@ -121,12 +130,22 @@ export function PromptCard({ prompt, onUpdate }: PromptCardProps) {
       ) : (
         <>
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-semibold text-sm leading-snug">{prompt.title}</h3>
-            <button
-              onClick={handleFavorite}
-              className="shrink-0 mt-0.5"
-              aria-label="Toggle favorite"
-            >
+            <div className="flex-1 min-w-0">
+              {category && (
+                <span
+                  className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full mb-1"
+                  style={{
+                    backgroundColor: `hsl(${category.color} / 0.15)`,
+                    color: `hsl(${category.color})`,
+                  }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: `hsl(${category.color})` }} />
+                  {category.name}
+                </span>
+              )}
+              <h3 className="font-semibold text-sm leading-snug">{prompt.title}</h3>
+            </div>
+            <button onClick={handleFavorite} className="shrink-0 mt-0.5" aria-label="Toggle favorite">
               <Star
                 className={`h-4 w-4 transition-colors ${
                   prompt.is_favorite
