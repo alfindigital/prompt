@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Download, Upload } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { exportPrompts, importPrompts } from "@/lib/prompts-store";
 import { toast } from "sonner";
 import { Prompt } from "@/lib/types";
@@ -49,6 +50,7 @@ export function Header({ onDataChange }: HeaderProps) {
         <p className="text-xs sm:text-sm text-muted-foreground">Your reusable prompt collection</p>
       </div>
       <div className="flex items-center gap-2">
+        <ThemeToggle />
         <Button variant="outline" size="sm" onClick={handleExport}>
           <Download className="h-4 w-4 sm:mr-1.5" />
           <span className="hidden sm:inline">Export</span>
