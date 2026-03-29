@@ -2,10 +2,10 @@ import { useState, useMemo, useCallback } from "react";
 import { Header } from "@/components/Header";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
+import { CategoryBar } from "@/components/CategoryBar";
 import { PromptCard } from "@/components/PromptCard";
 import { EmptyState } from "@/components/EmptyState";
-import { getPrompts, getAllTags } from "@/lib/prompts-store";
-import { Prompt } from "@/lib/types";
+import { getPrompts, getAllTags, getCategories } from "@/lib/prompts-store";
 
 const Index = () => {
   const [version, setVersion] = useState(0);
@@ -13,9 +13,11 @@ const Index = () => {
 
   const prompts = useMemo(() => getPrompts(), [version]);
   const allTags = useMemo(() => getAllTags(), [version]);
+  const categories = useMemo(() => getCategories(), [version]);
 
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     let result = prompts;
@@ -31,8 +33,11 @@ const Index = () => {
     if (selectedTag) {
       result = result.filter((p) => p.tags.includes(selectedTag));
     }
+    if (selectedCategory) {
+      result = result.filter((p) => p.category === selectedCategory);
+    }
     return result;
-  }, [prompts, search, selectedTag]);
+  }, [prompts, search, selectedTag, selectedCategory]);
 
   return (
     <div className="min-h-screen">
@@ -40,8 +45,15 @@ const Index = () => {
         <Header onDataChange={refresh} />
 
         <div className="space-y-5">
-          <QuickAddForm onAdd={refresh} />
-          
+          <QuickAddForm onAdd={refresh} defaultCategory={selectedCategory} />
+
+          <CategoryBar
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            onDataChange={refresh}
+          />
+
           {prompts.length > 0 && (
             <SearchFilterBar
               search={search}
@@ -61,7 +73,7 @@ const Index = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filtered.map((p) => (
-                <PromptCard key={p.id} prompt={p} onUpdate={refresh} />
+                <PromptCard key={p.id} prompt={p} onUpdate={refresh} categories={categories} />
               ))}
             </div>
           )}

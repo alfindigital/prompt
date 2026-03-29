@@ -2,19 +2,23 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { addPrompt } from "@/lib/prompts-store";
+import { addPrompt, getCategories } from "@/lib/prompts-store";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
 
 interface QuickAddFormProps {
   onAdd: () => void;
+  defaultCategory?: string | null;
 }
 
-export function QuickAddForm({ onAdd }: QuickAddFormProps) {
+export function QuickAddForm({ onAdd, defaultCategory = null }: QuickAddFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tagsInput, setTagsInput] = useState("");
+  const [categoryId, setCategoryId] = useState<string | null>(defaultCategory);
   const [expanded, setExpanded] = useState(false);
+
+  const categories = getCategories();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,10 +30,11 @@ export function QuickAddForm({ onAdd }: QuickAddFormProps) {
       .split(",")
       .map((t) => t.trim().toLowerCase())
       .filter(Boolean);
-    addPrompt({ title: title.trim(), content: content.trim(), tags });
+    addPrompt({ title: title.trim(), content: content.trim(), tags, category: categoryId });
     setTitle("");
     setContent("");
     setTagsInput("");
+    setCategoryId(defaultCategory);
     setExpanded(false);
     onAdd();
     toast.success("Prompt added");
@@ -63,19 +68,28 @@ export function QuickAddForm({ onAdd }: QuickAddFormProps) {
         rows={4}
         className="resize-none text-sm"
       />
-      <Input
-        placeholder="Tags (comma-separated)"
-        value={tagsInput}
-        onChange={(e) => setTagsInput(e.target.value)}
-        className="text-sm"
-      />
+      <div className="flex gap-2">
+        <Input
+          placeholder="Tags (comma-separated)"
+          value={tagsInput}
+          onChange={(e) => setTagsInput(e.target.value)}
+          className="text-sm flex-1"
+        />
+        {categories.length > 0 && (
+          <select
+            value={categoryId || ""}
+            onChange={(e) => setCategoryId(e.target.value || null)}
+            className="text-sm rounded-md border border-input bg-background px-3 py-1.5 text-foreground"
+          >
+            <option value="">No category</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        )}
+      </div>
       <div className="flex gap-2 justify-end">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => setExpanded(false)}
-        >
+        <Button type="button" variant="ghost" size="sm" onClick={() => setExpanded(false)}>
           Cancel
         </Button>
         <Button type="submit" size="sm">
