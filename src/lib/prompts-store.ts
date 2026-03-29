@@ -1,6 +1,18 @@
-import { Prompt } from "./types";
+import { Prompt, Category } from "./types";
 
 const STORAGE_KEY = "prompt-library-prompts";
+const CATEGORIES_KEY = "prompt-library-categories";
+
+const CATEGORY_COLORS = [
+  "250 60% 52%", // purple
+  "170 60% 42%", // teal
+  "38 92% 50%",  // amber
+  "0 72% 51%",   // red
+  "210 80% 52%", // blue
+  "330 65% 50%", // pink
+  "145 60% 40%", // green
+  "25 90% 52%",  // orange
+];
 
 function read(): Prompt[] {
   try {
@@ -59,11 +71,13 @@ export function importPrompts(prompts: Prompt[]): number {
   const existingIds = new Set(all.map((p) => p.id));
   let count = 0;
   for (const p of prompts) {
-    if (existingIds.has(p.id)) {
-      const idx = all.findIndex((x) => x.id === p.id);
-      all[idx] = p;
+    // Ensure category field exists for older imports
+    const prompt = { ...p, category: p.category ?? null };
+    if (existingIds.has(prompt.id)) {
+      const idx = all.findIndex((x) => x.id === prompt.id);
+      all[idx] = prompt;
     } else {
-      all.push(p);
+      all.push(prompt);
     }
     count++;
   }
@@ -80,4 +94,60 @@ export function getAllTags(): string[] {
   const tagSet = new Set<string>();
   all.forEach((p) => p.tags.forEach((t) => tagSet.add(t)));
   return Array.from(tagSet).sort();
+}
+
+// --- Category helpers ---
+
+function readCategories(): Category[] {
+  try {
+    const raw = localStorage.getItem(CATEGORIES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeCategories(cats: Category[]) {
+  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(cats));
+}
+
+export function getCategories(): Category[] {
+  return readCategories().sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export function addCategory(name: string): Category {
+  const all = readCategories();
+  const colorIndex = all.length % CATEGORY_COLORS.length;
+  const cat: Category = {
+    id: crypto.randomUUID(),
+    name: name.trim(),
+    color: CATEGORY_COLORS[colorIndex],
+  };
+  all.push(cat);
+  writeCategories(all);
+  return cat;
+}
+
+export function deleteCategory(id: string) {
+  const cats = readCategories().filter((c) => c.id !== id);
+  writeCategories(cats);
+  // Remove category from prompts that had it
+  const all = read();
+  let changed = false;
+  all.forEach((p) => {
+    if (p.category === id) {
+      p.category = null;
+      changed = true;
+    }
+  });
+  if (changed) write(all);
+}
+
+export function renameCategory(id: string, newName: string) {
+  const cats = readCategories();
+  const idx = cats.findIndex((c) => c.id === id);
+  if (idx !== -1) {
+    cats[idx].name = newName.trim();
+    writeCategories(cats);
+  }
 }
