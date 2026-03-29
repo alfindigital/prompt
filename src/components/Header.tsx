@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Download, Upload } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { exportPrompts, importPrompts } from "@/lib/prompts-store";
 import { toast } from "sonner";
 import { Prompt } from "@/lib/types";
