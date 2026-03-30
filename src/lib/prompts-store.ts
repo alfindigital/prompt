@@ -30,8 +30,20 @@ function write(prompts: Prompt[]) {
 export function getPrompts(): Prompt[] {
   return read().sort((a, b) => {
     if (a.is_favorite !== b.is_favorite) return a.is_favorite ? -1 : 1;
+    const orderA = a.sort_order ?? Number.MAX_SAFE_INTEGER;
+    const orderB = b.sort_order ?? Number.MAX_SAFE_INTEGER;
+    if (orderA !== orderB) return orderA - orderB;
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
+}
+
+export function reorderPrompts(orderedIds: string[]) {
+  const all = read();
+  orderedIds.forEach((id, index) => {
+    const p = all.find((x) => x.id === id);
+    if (p) p.sort_order = index;
+  });
+  write(all);
 }
 
 export function addPrompt(data: Omit<Prompt, "id" | "created_at" | "last_used_at" | "is_favorite">): Prompt {
