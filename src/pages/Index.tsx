@@ -18,11 +18,15 @@ import { SearchFilterBar } from "@/components/SearchFilterBar";
 import { CategoryBar } from "@/components/CategoryBar";
 import { SortablePromptCard } from "@/components/SortablePromptCard";
 import { EmptyState } from "@/components/EmptyState";
+import { BottomNav } from "@/components/BottomNav";
 import { getPrompts, getAllTags, getCategories, reorderPrompts } from "@/lib/prompts-store";
+
+type Tab = "prompts" | "add" | "settings";
 
 const Index = () => {
   const [version, setVersion] = useState(0);
   const refresh = useCallback(() => setVersion((v) => v + 1), []);
+  const [activeTab, setActiveTab] = useState<Tab>("prompts");
 
   const prompts = useMemo(() => getPrompts(), [version]);
   const allTags = useMemo(() => getAllTags(), [version]);
@@ -61,11 +65,9 @@ const Index = () => {
     (event: DragEndEvent) => {
       const { active, over } = event;
       if (!over || active.id === over.id) return;
-
       const oldIndex = filtered.findIndex((p) => p.id === active.id);
       const newIndex = filtered.findIndex((p) => p.id === over.id);
       if (oldIndex === -1 || newIndex === -1) return;
-
       const newOrder = [...filtered];
       const [moved] = newOrder.splice(oldIndex, 1);
       newOrder.splice(newIndex, 0, moved);
@@ -75,50 +77,60 @@ const Index = () => {
     [filtered, refresh]
   );
 
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+  };
+
   return (
-    <div className="min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
-        <Header onDataChange={refresh} />
+    <div className="min-h-screen pb-24">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <Header />
 
         <div className="space-y-5">
-          <QuickAddForm onAdd={refresh} defaultCategory={selectedCategory} />
-
-          <CategoryBar
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            onDataChange={refresh}
-          />
-
-          {prompts.length > 0 && (
-            <SearchFilterBar
-              search={search}
-              onSearchChange={setSearch}
-              allTags={allTags}
-              selectedTag={selectedTag}
-              onTagSelect={setSelectedTag}
-            />
-          )}
-
-          {prompts.length === 0 ? (
-            <EmptyState />
-          ) : filtered.length === 0 ? (
-            <p className="text-center text-sm text-muted-foreground py-12">
-              No prompts match your search.
-            </p>
+          {activeTab === "add" ? (
+            <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
           ) : (
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-              <SortableContext items={filtered.map((p) => p.id)} strategy={rectSortingStrategy}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filtered.map((p) => (
-                    <SortablePromptCard key={p.id} prompt={p} onUpdate={refresh} categories={categories} />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
+            <>
+              <CategoryBar
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onSelectCategory={setSelectedCategory}
+                onDataChange={refresh}
+              />
+
+              {prompts.length > 0 && (
+                <SearchFilterBar
+                  search={search}
+                  onSearchChange={setSearch}
+                  allTags={allTags}
+                  selectedTag={selectedTag}
+                  onTagSelect={setSelectedTag}
+                />
+              )}
+
+              {prompts.length === 0 ? (
+                <EmptyState />
+              ) : filtered.length === 0 ? (
+                <p className="text-center text-sm text-muted-foreground py-12">
+                  No prompts match your search.
+                </p>
+              ) : (
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={filtered.map((p) => p.id)} strategy={rectSortingStrategy}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filtered.map((p) => (
+                        <SortablePromptCard key={p.id} prompt={p} onUpdate={refresh} categories={categories} />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              )}
+            </>
           )}
         </div>
       </div>
+
+      <BottomNav activeTab={activeTab} onTabChange={handleTabChange} onDataChange={refresh} />
     </div>
   );
 };
