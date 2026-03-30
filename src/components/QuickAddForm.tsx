@@ -9,6 +9,7 @@ import { Plus } from "lucide-react";
 interface QuickAddFormProps {
   onAdd: () => void;
   defaultCategory?: string | null;
+  forceExpanded?: boolean;
 }
 
 export function QuickAddForm({ onAdd, defaultCategory = null }: QuickAddFormProps) {
