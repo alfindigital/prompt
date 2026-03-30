@@ -98,7 +98,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             rows={4}
             className="resize-none text-sm"
           />
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Input
               value={editTags}
               onChange={(e) => setEditTags(e.target.value)}
@@ -108,7 +108,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             <select
               value={editCategory || ""}
               onChange={(e) => setEditCategory(e.target.value || null)}
-              className="text-sm rounded-md border border-input bg-background px-3 py-1.5 text-foreground"
+              className="text-sm rounded-md border border-input bg-background px-3 py-2 text-foreground w-full sm:w-auto"
             >
               <option value="">No category</option>
               {categories.map((c) => (
