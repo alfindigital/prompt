@@ -1,11 +1,24 @@
 import { useState, useMemo, useCallback } from "react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Header } from "@/components/Header";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
 import { CategoryBar } from "@/components/CategoryBar";
-import { PromptCard } from "@/components/PromptCard";
+import { SortablePromptCard } from "@/components/SortablePromptCard";
 import { EmptyState } from "@/components/EmptyState";
-import { getPrompts, getAllTags, getCategories } from "@/lib/prompts-store";
+import { getPrompts, getAllTags, getCategories, reorderPrompts } from "@/lib/prompts-store";
 
 const Index = () => {
   const [version, setVersion] = useState(0);
@@ -39,6 +52,29 @@ const Index = () => {
     return result;
   }, [prompts, search, selectedTag, selectedCategory]);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
+  );
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+
+      const oldIndex = filtered.findIndex((p) => p.id === active.id);
+      const newIndex = filtered.findIndex((p) => p.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      const newOrder = [...filtered];
+      const [moved] = newOrder.splice(oldIndex, 1);
+      newOrder.splice(newIndex, 0, moved);
+      reorderPrompts(newOrder.map((p) => p.id));
+      refresh();
+    },
+    [filtered, refresh]
+  );
+
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
@@ -71,11 +107,15 @@ const Index = () => {
               No prompts match your search.
             </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filtered.map((p) => (
-                <PromptCard key={p.id} prompt={p} onUpdate={refresh} categories={categories} />
-              ))}
-            </div>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={filtered.map((p) => p.id)} strategy={rectSortingStrategy}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filtered.map((p) => (
+                    <SortablePromptCard key={p.id} prompt={p} onUpdate={refresh} categories={categories} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           )}
         </div>
       </div>
