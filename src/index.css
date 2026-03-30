@@ -107,6 +107,10 @@
   }
 }
 
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* Markdown prose styles */
 .prose-prompt h1, .prose-prompt h2, .prose-prompt h3 {
   @apply font-semibold text-foreground;
