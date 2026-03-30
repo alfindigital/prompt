@@ -12,12 +12,12 @@ interface QuickAddFormProps {
   forceExpanded?: boolean;
 }
 
-export function QuickAddForm({ onAdd, defaultCategory = null }: QuickAddFormProps) {
+export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = false }: QuickAddFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [categoryId, setCategoryId] = useState<string | null>(defaultCategory);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(forceExpanded);
 
   const categories = getCategories();
 
