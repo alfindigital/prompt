@@ -68,7 +68,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null }: QuickAddFormProp
         rows={4}
         className="resize-none text-sm"
       />
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Input
           placeholder="Tags (comma-separated)"
           value={tagsInput}
@@ -79,7 +79,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null }: QuickAddFormProp
           <select
             value={categoryId || ""}
             onChange={(e) => setCategoryId(e.target.value || null)}
-            className="text-sm rounded-md border border-input bg-background px-3 py-1.5 text-foreground"
+            className="text-sm rounded-md border border-input bg-background px-3 py-2 text-foreground w-full sm:w-auto"
           >
             <option value="">No category</option>
             {categories.map((c) => (
