@@ -50,13 +50,11 @@ export function Header({ onDataChange }: HeaderProps) {
         <p className="text-xs sm:text-sm text-muted-foreground">Your reusable prompt collection</p>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={handleExport}>
-          <Download className="h-4 w-4 sm:mr-1.5" />
-          <span className="hidden sm:inline">Export</span>
+        <Button variant="outline" size="icon" className="h-8 w-8" onClick={handleExport} aria-label="Export">
+          <Download className="h-4 w-4" />
         </Button>
-        <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
-          <Upload className="h-4 w-4 sm:mr-1.5" />
-          <span className="hidden sm:inline">Import</span>
+        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => fileRef.current?.click()} aria-label="Import">
+          <Upload className="h-4 w-4" />
         </Button>
         <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
         <ThemeToggle />
