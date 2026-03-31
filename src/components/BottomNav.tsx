@@ -51,9 +51,9 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
     <>
       {/* Settings overlay */}
       {showSettings && (
-        <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm" onClick={() => setShowSettings(false)}>
+        <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm animate-fade-in" onClick={() => setShowSettings(false)}>
           <div
-            className="absolute bottom-20 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm bg-card border rounded-xl shadow-lg p-4 space-y-3"
+            className="absolute bottom-20 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm bg-card border rounded-xl shadow-lg p-4 space-y-3 animate-scale-in"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
