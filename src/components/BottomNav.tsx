@@ -79,46 +79,43 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
 
       {/* Bottom navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card/95 backdrop-blur-md safe-area-bottom">
-        <div className="max-w-4xl mx-auto flex items-center justify-around px-4 py-2">
+        <div className="max-w-4xl mx-auto flex items-center justify-around px-6 py-2.5">
           {/* Prompts */}
           <button
             onClick={() => { onTabChange("prompts"); setShowSettings(false); }}
-            className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-lg transition-colors ${
+            className={`flex flex-col items-center gap-1 px-5 py-1 transition-colors ${
               activeTab === "prompts" && !showSettings
                 ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground/60 hover:text-foreground"
             }`}
           >
-            <List className="h-5 w-5" />
-            <span className="text-[10px] font-medium">Prompts</span>
+            <List className="h-5 w-5" strokeWidth={activeTab === "prompts" && !showSettings ? 2.5 : 1.5} />
           </button>
 
-          {/* Add - prominent */}
+          {/* Add - floating raised */}
           <button
             onClick={() => { onTabChange("add"); setShowSettings(false); }}
-            className="flex flex-col items-center gap-0.5 -mt-4"
+            className="relative -mt-7"
           >
-            <div className={`rounded-full p-3 shadow-lg transition-colors ${
+            <div className={`rounded-2xl p-3.5 shadow-lg transition-all ${
               activeTab === "add" && !showSettings
-                ? "bg-primary text-primary-foreground"
-                : "bg-primary/90 text-primary-foreground hover:bg-primary"
+                ? "bg-primary text-primary-foreground shadow-primary/30 scale-105"
+                : "bg-primary/90 text-primary-foreground hover:bg-primary hover:shadow-primary/20"
             }`}>
-              <Plus className="h-6 w-6" />
+              <Plus className="h-5 w-5" strokeWidth={2} />
             </div>
-            <span className="text-[10px] font-medium text-muted-foreground">Add</span>
           </button>
 
           {/* Settings */}
           <button
             onClick={() => setShowSettings(!showSettings)}
-            className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-lg transition-colors ${
+            className={`flex flex-col items-center gap-1 px-5 py-1 transition-colors ${
               showSettings
                 ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground/60 hover:text-foreground"
             }`}
           >
-            <Settings className="h-5 w-5" />
-            <span className="text-[10px] font-medium">Settings</span>
+            <Settings className="h-5 w-5" strokeWidth={showSettings ? 2.5 : 1.5} />
           </button>
         </div>
       </nav>
