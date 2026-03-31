@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { addPrompt, getCategories } from "@/lib/prompts-store";
+import { addPrompt, getCategories, getAllTags } from "@/lib/prompts-store";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 interface QuickAddFormProps {
   onAdd: () => void;
@@ -16,10 +16,40 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tagsInput, setTagsInput] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [categoryId, setCategoryId] = useState<string | null>(defaultCategory);
   const [expanded, setExpanded] = useState(forceExpanded);
+  const [showTagSuggestions, setShowTagSuggestions] = useState(false);
 
   const categories = getCategories();
+  const existingTags = getAllTags();
+
+  const filteredSuggestions = useMemo(() => {
+    const q = tagsInput.toLowerCase().trim();
+    return existingTags.filter(
+      (t) => !selectedTags.includes(t) && (!q || t.includes(q))
+    );
+  }, [tagsInput, existingTags, selectedTags]);
+
+  const addTag = (tag: string) => {
+    const normalized = tag.trim().toLowerCase();
+    if (normalized && !selectedTags.includes(normalized)) {
+      setSelectedTags((prev) => [...prev, normalized]);
+    }
+    setTagsInput("");
+    setShowTagSuggestions(false);
+  };
+
+  const removeTag = (tag: string) => {
+    setSelectedTags((prev) => prev.filter((t) => t !== tag));
+  };
+
+  const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if ((e.key === "Enter" || e.key === ",") && tagsInput.trim()) {
+      e.preventDefault();
+      addTag(tagsInput);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,14 +57,18 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
       toast.error("Title and content are required");
       return;
     }
-    const tags = tagsInput
-      .split(",")
-      .map((t) => t.trim().toLowerCase())
-      .filter(Boolean);
-    addPrompt({ title: title.trim(), content: content.trim(), tags, category: categoryId });
+    // Combine selected tags with any remaining input
+    const finalTags = [...selectedTags];
+    if (tagsInput.trim()) {
+      tagsInput.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean).forEach((t) => {
+        if (!finalTags.includes(t)) finalTags.push(t);
+      });
+    }
+    addPrompt({ title: title.trim(), content: content.trim(), tags: finalTags, category: categoryId });
     setTitle("");
     setContent("");
     setTagsInput("");
+    setSelectedTags([]);
     setCategoryId(defaultCategory);
     setExpanded(false);
     onAdd();
@@ -69,13 +103,52 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
         rows={4}
         className="resize-none text-sm"
       />
+
+      {/* Tags */}
+      <div className="space-y-2">
+        {selectedTags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {selectedTags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium"
+              >
+                {tag}
+                <button type="button" onClick={() => removeTag(tag)} className="hover:text-destructive">
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="relative">
+          <Input
+            placeholder="Add tags..."
+            value={tagsInput}
+            onChange={(e) => { setTagsInput(e.target.value); setShowTagSuggestions(true); }}
+            onFocus={() => setShowTagSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowTagSuggestions(false), 150)}
+            onKeyDown={handleTagInputKeyDown}
+            className="text-sm"
+          />
+          {showTagSuggestions && filteredSuggestions.length > 0 && (
+            <div className="absolute z-10 top-full mt-1 w-full bg-popover border rounded-lg shadow-lg max-h-32 overflow-y-auto animate-scale-in">
+              {filteredSuggestions.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  className="w-full text-left px-3 py-1.5 text-sm hover:bg-accent transition-colors"
+                  onMouseDown={(e) => { e.preventDefault(); addTag(tag); }}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="flex flex-col sm:flex-row gap-2">
-        <Input
-          placeholder="Tags (comma-separated)"
-          value={tagsInput}
-          onChange={(e) => setTagsInput(e.target.value)}
-          className="text-sm flex-1"
-        />
         {categories.length > 0 && (
           <select
             value={categoryId || ""}
