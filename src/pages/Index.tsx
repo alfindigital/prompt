@@ -128,7 +128,8 @@ const Index = () => {
                   </SortableContext>
                 </DndContext>
               )}
-            </>
+              </div>
+            </div>
           )}
         </div>
       </div>
