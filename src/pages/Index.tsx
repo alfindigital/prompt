@@ -88,9 +88,12 @@ const Index = () => {
 
         <div className="space-y-5">
           {activeTab === "add" ? (
-            <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
+            <div key="add" className="animate-fade-in">
+              <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
+            </div>
           ) : (
-            <>
+            <div key="prompts" className="animate-fade-in">
+              <div className="space-y-5">
               <CategoryBar
                 categories={categories}
                 selectedCategory={selectedCategory}
@@ -125,7 +128,8 @@ const Index = () => {
                   </SortableContext>
                 </DndContext>
               )}
-            </>
+              </div>
+            </div>
           )}
         </div>
       </div>
