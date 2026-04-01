@@ -33,7 +33,7 @@ const Index = () => {
   const categories = useMemo(() => getCategories(), [version]);
 
   const [search, setSearch] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
