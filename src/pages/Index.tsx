@@ -54,7 +54,7 @@ const Index = () => {
       result = result.filter((p) => p.category === selectedCategory);
     }
     return result;
-  }, [prompts, search, selectedTag, selectedCategory]);
+  }, [prompts, search, selectedTags, selectedCategory]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
