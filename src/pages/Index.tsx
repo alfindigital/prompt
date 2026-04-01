@@ -106,8 +106,11 @@ const Index = () => {
                   search={search}
                   onSearchChange={setSearch}
                   allTags={allTags}
-                  selectedTag={selectedTag}
-                  onTagSelect={setSelectedTag}
+                  selectedTags={selectedTags}
+                  onTagToggle={(tag) => setSelectedTags((prev) =>
+                    prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+                  )}
+                  onClearTags={() => setSelectedTags([])}
                 />
               )}
 
