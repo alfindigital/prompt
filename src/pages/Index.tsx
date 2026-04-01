@@ -47,8 +47,8 @@ const Index = () => {
           p.tags.some((t) => t.includes(q))
       );
     }
-    if (selectedTag) {
-      result = result.filter((p) => p.tags.includes(selectedTag));
+    if (selectedTags.length > 0) {
+      result = result.filter((p) => selectedTags.every((t) => p.tags.includes(t)));
     }
     if (selectedCategory) {
       result = result.filter((p) => p.category === selectedCategory);
