@@ -1,12 +1,12 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prompt, Category } from "@/lib/types";
-import { updatePrompt, deletePrompt, getCategories } from "@/lib/prompts-store";
+import { updatePrompt, deletePrompt, duplicatePrompt } from "@/lib/prompts-store";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Copy, Trash2, Pencil, Check, X } from "lucide-react";
+import { Star, Copy, Trash2, Pencil, Check, X, Files } from "lucide-react";
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -182,6 +182,13 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             <div className="flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleCopy}>
                 <Copy className="h-3.5 w-3.5" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => {
+                duplicatePrompt(prompt.id);
+                onUpdate();
+                toast.success("Prompt duplicated");
+              }}>
+                <Files className="h-3.5 w-3.5" />
               </Button>
               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditing(true)}>
                 <Pencil className="h-3.5 w-3.5" />
