@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Copy, Trash2, Pencil, Check, X } from "lucide-react";
+import { Star, Copy, Trash2, Pencil, Check, X, Files } from "lucide-react";
 
 interface PromptCardProps {
   prompt: Prompt;
