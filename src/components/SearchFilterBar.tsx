@@ -5,16 +5,18 @@ interface SearchFilterBarProps {
   search: string;
   onSearchChange: (val: string) => void;
   allTags: string[];
-  selectedTag: string | null;
-  onTagSelect: (tag: string | null) => void;
+  selectedTags: string[];
+  onTagToggle: (tag: string) => void;
+  onClearTags: () => void;
 }
 
 export function SearchFilterBar({
   search,
   onSearchChange,
   allTags,
-  selectedTag,
-  onTagSelect,
+  selectedTags,
+  onTagToggle,
+  onClearTags,
 }: SearchFilterBarProps) {
   return (
     <div className="space-y-3">
@@ -36,13 +38,21 @@ export function SearchFilterBar({
         )}
       </div>
       {allTags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5 items-center">
+          {selectedTags.length > 0 && (
+            <button
+              onClick={onClearTags}
+              className="text-[10px] px-2 py-0.5 rounded-full border border-destructive/40 text-destructive hover:bg-destructive/10 transition-colors"
+            >
+              Clear
+            </button>
+          )}
           {allTags.map((tag) => (
             <button
               key={tag}
-              onClick={() => onTagSelect(selectedTag === tag ? null : tag)}
+              onClick={() => onTagToggle(tag)}
               className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
-                selectedTag === tag
+                selectedTags.includes(tag)
                   ? "bg-primary text-primary-foreground border-primary"
                   : "bg-secondary text-secondary-foreground border-border hover:border-primary/40"
               }`}

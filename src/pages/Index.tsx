@@ -33,7 +33,7 @@ const Index = () => {
   const categories = useMemo(() => getCategories(), [version]);
 
   const [search, setSearch] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
@@ -47,14 +47,14 @@ const Index = () => {
           p.tags.some((t) => t.includes(q))
       );
     }
-    if (selectedTag) {
-      result = result.filter((p) => p.tags.includes(selectedTag));
+    if (selectedTags.length > 0) {
+      result = result.filter((p) => selectedTags.every((t) => p.tags.includes(t)));
     }
     if (selectedCategory) {
       result = result.filter((p) => p.category === selectedCategory);
     }
     return result;
-  }, [prompts, search, selectedTag, selectedCategory]);
+  }, [prompts, search, selectedTags, selectedCategory]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -106,8 +106,11 @@ const Index = () => {
                   search={search}
                   onSearchChange={setSearch}
                   allTags={allTags}
-                  selectedTag={selectedTag}
-                  onTagSelect={setSelectedTag}
+                  selectedTags={selectedTags}
+                  onTagToggle={(tag) => setSelectedTags((prev) =>
+                    prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+                  )}
+                  onClearTags={() => setSelectedTags([])}
                 />
               )}
 
