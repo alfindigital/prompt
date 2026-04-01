@@ -100,7 +100,7 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
             <div className={`rounded-2xl p-3.5 shadow-lg transition-all ${
               activeTab === "add" && !showSettings
                 ? "bg-primary text-primary-foreground shadow-primary/30 scale-105"
-                : "bg-primary/90 text-primary-foreground hover:bg-primary hover:shadow-primary/20"
+                : "bg-primary/90 text-primary-foreground hover:bg-primary hover:shadow-primary/20 animate-[pulse_3s_ease-in-out_infinite]"
             }`}>
               <Plus className="h-5 w-5" strokeWidth={2} />
             </div>
