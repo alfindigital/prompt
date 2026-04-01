@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prompt, Category } from "@/lib/types";
-import { updatePrompt, deletePrompt, getCategories } from "@/lib/prompts-store";
+import { updatePrompt, deletePrompt, duplicatePrompt } from "@/lib/prompts-store";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
