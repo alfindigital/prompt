@@ -60,6 +60,24 @@ export function addPrompt(data: Omit<Prompt, "id" | "created_at" | "last_used_at
   return prompt;
 }
 
+export function duplicatePrompt(id: string): Prompt | null {
+  const all = read();
+  const original = all.find((p) => p.id === id);
+  if (!original) return null;
+  const copy: Prompt = {
+    ...original,
+    id: crypto.randomUUID(),
+    title: `${original.title} (copy)`,
+    is_favorite: false,
+    created_at: new Date().toISOString(),
+    last_used_at: null,
+    sort_order: undefined,
+  };
+  all.push(copy);
+  write(all);
+  return copy;
+}
+
 export function updatePrompt(id: string, updates: Partial<Prompt>): Prompt | null {
   const all = read();
   const idx = all.findIndex((p) => p.id === id);

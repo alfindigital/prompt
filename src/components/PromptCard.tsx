@@ -183,6 +183,13 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleCopy}>
                 <Copy className="h-3.5 w-3.5" />
               </Button>
+              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => {
+                duplicatePrompt(prompt.id);
+                onUpdate();
+                toast.success("Prompt duplicated");
+              }}>
+                <Files className="h-3.5 w-3.5" />
+              </Button>
               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditing(true)}>
                 <Pencil className="h-3.5 w-3.5" />
               </Button>
