@@ -21,10 +21,11 @@ import { EmptyState } from "@/components/EmptyState";
 import { BottomNav } from "@/components/BottomNav";
 import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts } from "@/lib/prompts-store";
 import { Button } from "@/components/ui/button";
-import { Trash2, X, CheckSquare } from "lucide-react";
+import { Trash2, CheckSquare, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 
 type Tab = "prompts" | "add" | "settings";
+type SortOption = "default" | "name" | "date" | "used";
 
 const Index = () => {
   const [version, setVersion] = useState(0);
@@ -38,6 +39,7 @@ const Index = () => {
   const [search, setSearch] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<SortOption>("default");
 
   // Bulk select state
   const [selectMode, setSelectMode] = useState(false);
@@ -60,8 +62,20 @@ const Index = () => {
     if (selectedCategory) {
       result = result.filter((p) => p.category === selectedCategory);
     }
+    if (sortBy !== "default") {
+      result = [...result].sort((a, b) => {
+        if (sortBy === "name") return a.title.localeCompare(b.title);
+        if (sortBy === "date") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        if (sortBy === "used") {
+          const aTime = a.last_used_at ? new Date(a.last_used_at).getTime() : 0;
+          const bTime = b.last_used_at ? new Date(b.last_used_at).getTime() : 0;
+          return bTime - aTime;
+        }
+        return 0;
+      });
+    }
     return result;
-  }, [prompts, search, selectedTags, selectedCategory]);
+  }, [prompts, search, selectedTags, selectedCategory, sortBy]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -166,18 +180,30 @@ const Index = () => {
                     <span className="text-xs text-muted-foreground">
                       {filtered.length} prompt{filtered.length !== 1 ? "s" : ""}
                     </span>
-                    <Button
-                      size="sm"
-                      variant={selectMode ? "secondary" : "ghost"}
-                      className="h-7 text-xs gap-1"
-                      onClick={() => {
-                        setSelectMode(!selectMode);
-                        setSelectedIds(new Set());
-                      }}
-                    >
-                      <CheckSquare className="h-3.5 w-3.5" />
-                      {selectMode ? "Cancel" : "Select"}
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as SortOption)}
+                        className="h-7 text-xs rounded-md border border-input bg-background px-2 text-foreground"
+                      >
+                        <option value="default">Default</option>
+                        <option value="name">Name A-Z</option>
+                        <option value="date">Newest</option>
+                        <option value="used">Most Used</option>
+                      </select>
+                      <Button
+                        size="sm"
+                        variant={selectMode ? "secondary" : "ghost"}
+                        className="h-7 text-xs gap-1"
+                        onClick={() => {
+                          setSelectMode(!selectMode);
+                          setSelectedIds(new Set());
+                        }}
+                      >
+                        <CheckSquare className="h-3.5 w-3.5" />
+                        {selectMode ? "Cancel" : "Select"}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
