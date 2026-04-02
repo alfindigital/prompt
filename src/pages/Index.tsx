@@ -26,9 +26,6 @@ import { toast } from "sonner";
 
 type Tab = "prompts" | "add" | "settings";
 type SortOption = "default" | "name" | "date" | "used";
-import { toast } from "sonner";
-
-type Tab = "prompts" | "add" | "settings";
 
 const Index = () => {
   const [version, setVersion] = useState(0);
