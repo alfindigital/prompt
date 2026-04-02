@@ -21,7 +21,11 @@ import { EmptyState } from "@/components/EmptyState";
 import { BottomNav } from "@/components/BottomNav";
 import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts } from "@/lib/prompts-store";
 import { Button } from "@/components/ui/button";
-import { Trash2, X, CheckSquare } from "lucide-react";
+import { Trash2, CheckSquare, ArrowUpDown } from "lucide-react";
+import { toast } from "sonner";
+
+type Tab = "prompts" | "add" | "settings";
+type SortOption = "default" | "name" | "date" | "used";
 import { toast } from "sonner";
 
 type Tab = "prompts" | "add" | "settings";
