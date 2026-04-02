@@ -22,6 +22,10 @@ import { BottomNav } from "@/components/BottomNav";
 import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts } from "@/lib/prompts-store";
 import { Button } from "@/components/ui/button";
 import { Trash2, CheckSquare, ArrowUpDown } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
 type Tab = "prompts" | "add" | "settings";
@@ -217,10 +221,28 @@ const Index = () => {
                   <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={handleSelectAll}>
                     {selectedIds.size === filtered.length ? "Deselect all" : "Select all"}
                   </Button>
-                  <Button size="sm" variant="destructive" className="h-7 text-xs gap-1" onClick={handleBulkDelete}>
-                    <Trash2 className="h-3.5 w-3.5" />
-                    Delete
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button size="sm" variant="destructive" className="h-7 text-xs gap-1">
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Hapus {selectedIds.size} prompt?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Tindakan ini akan menghapus {selectedIds.size} prompt yang dipilih. Kamu bisa membatalkan lewat tombol Undo setelah dihapus.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Batal</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                          Hapus
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               )}
 
