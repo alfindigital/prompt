@@ -180,18 +180,30 @@ const Index = () => {
                     <span className="text-xs text-muted-foreground">
                       {filtered.length} prompt{filtered.length !== 1 ? "s" : ""}
                     </span>
-                    <Button
-                      size="sm"
-                      variant={selectMode ? "secondary" : "ghost"}
-                      className="h-7 text-xs gap-1"
-                      onClick={() => {
-                        setSelectMode(!selectMode);
-                        setSelectedIds(new Set());
-                      }}
-                    >
-                      <CheckSquare className="h-3.5 w-3.5" />
-                      {selectMode ? "Cancel" : "Select"}
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as SortOption)}
+                        className="h-7 text-xs rounded-md border border-input bg-background px-2 text-foreground"
+                      >
+                        <option value="default">Default</option>
+                        <option value="name">Name A-Z</option>
+                        <option value="date">Newest</option>
+                        <option value="used">Most Used</option>
+                      </select>
+                      <Button
+                        size="sm"
+                        variant={selectMode ? "secondary" : "ghost"}
+                        className="h-7 text-xs gap-1"
+                        onClick={() => {
+                          setSelectMode(!selectMode);
+                          setSelectedIds(new Set());
+                        }}
+                      >
+                        <CheckSquare className="h-3.5 w-3.5" />
+                        {selectMode ? "Cancel" : "Select"}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
