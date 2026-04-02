@@ -3,14 +3,18 @@ import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 import { PromptCard } from "./PromptCard";
 import { Prompt, Category } from "@/lib/types";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface SortablePromptCardProps {
   prompt: Prompt;
   onUpdate: () => void;
   categories: Category[];
+  selectMode?: boolean;
+  selected?: boolean;
+  onToggleSelect?: (id: string) => void;
 }
 
-export function SortablePromptCard({ prompt, onUpdate, categories }: SortablePromptCardProps) {
+export function SortablePromptCard({ prompt, onUpdate, categories, selectMode, selected, onToggleSelect }: SortablePromptCardProps) {
   const {
     attributes,
     listeners,
@@ -29,15 +33,27 @@ export function SortablePromptCard({ prompt, onUpdate, categories }: SortablePro
 
   return (
     <div ref={setNodeRef} style={style} className="relative group/sortable">
-      <button
-        {...attributes}
-        {...listeners}
-        className="absolute top-2 left-2 z-10 p-1.5 rounded-md opacity-60 sm:opacity-0 sm:group-hover/sortable:opacity-100 transition-opacity cursor-grab active:cursor-grabbing bg-muted/80 hover:bg-muted touch-none"
-        aria-label="Drag to reorder"
-      >
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
-      </button>
-      <PromptCard prompt={prompt} onUpdate={onUpdate} categories={categories} />
+      {selectMode ? (
+        <button
+          onClick={() => onToggleSelect?.(prompt.id)}
+          className="absolute top-2 left-2 z-10 p-1"
+          aria-label="Select prompt"
+        >
+          <Checkbox checked={selected} className="pointer-events-none" />
+        </button>
+      ) : (
+        <button
+          {...attributes}
+          {...listeners}
+          className="absolute top-2 left-2 z-10 p-1.5 rounded-md opacity-60 sm:opacity-0 sm:group-hover/sortable:opacity-100 transition-opacity cursor-grab active:cursor-grabbing bg-muted/80 hover:bg-muted touch-none"
+          aria-label="Drag to reorder"
+        >
+          <GripVertical className="h-4 w-4 text-muted-foreground" />
+        </button>
+      )}
+      <div onClick={selectMode ? () => onToggleSelect?.(prompt.id) : undefined} className={selectMode ? "cursor-pointer" : ""}>
+        <PromptCard prompt={prompt} onUpdate={onUpdate} categories={categories} />
+      </div>
     </div>
   );
 }

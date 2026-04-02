@@ -96,6 +96,21 @@ export function deletePrompt(id: string): Prompt | null {
   return removed;
 }
 
+export function deletePrompts(ids: string[]): Prompt[] {
+  const all = read();
+  const idSet = new Set(ids);
+  const removed: Prompt[] = [];
+  const remaining = all.filter((p) => {
+    if (idSet.has(p.id)) {
+      removed.push(p);
+      return false;
+    }
+    return true;
+  });
+  write(remaining);
+  return removed;
+}
+
 export function importPrompts(prompts: Prompt[]): number {
   const all = read();
   const existingIds = new Set(all.map((p) => p.id));
