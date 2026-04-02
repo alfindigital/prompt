@@ -39,6 +39,7 @@ const Index = () => {
   const [search, setSearch] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<SortOption>("default");
 
   // Bulk select state
   const [selectMode, setSelectMode] = useState(false);
@@ -61,8 +62,20 @@ const Index = () => {
     if (selectedCategory) {
       result = result.filter((p) => p.category === selectedCategory);
     }
+    if (sortBy !== "default") {
+      result = [...result].sort((a, b) => {
+        if (sortBy === "name") return a.title.localeCompare(b.title);
+        if (sortBy === "date") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        if (sortBy === "used") {
+          const aTime = a.last_used_at ? new Date(a.last_used_at).getTime() : 0;
+          const bTime = b.last_used_at ? new Date(b.last_used_at).getTime() : 0;
+          return bTime - aTime;
+        }
+        return 0;
+      });
+    }
     return result;
-  }, [prompts, search, selectedTags, selectedCategory]);
+  }, [prompts, search, selectedTags, selectedCategory, sortBy]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
