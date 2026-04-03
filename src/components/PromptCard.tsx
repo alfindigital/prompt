@@ -83,32 +83,32 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   };
 
   return (
-    <div className="group rounded-xl border bg-card p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-3">
+    <div className="group rounded-2xl border bg-card p-4 sm:p-5 card-hover flex flex-col gap-3">
       {editing ? (
         <>
           <Input
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
-            className="font-medium"
+            className="font-medium rounded-xl"
             autoFocus
           />
           <Textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
             rows={4}
-            className="resize-none text-sm"
+            className="resize-none text-sm rounded-xl"
           />
           <div className="flex flex-col sm:flex-row gap-2">
             <Input
               value={editTags}
               onChange={(e) => setEditTags(e.target.value)}
               placeholder="Tags (comma-separated)"
-              className="text-sm flex-1"
+              className="text-sm flex-1 rounded-xl"
             />
             <select
               value={editCategory || ""}
               onChange={(e) => setEditCategory(e.target.value || null)}
-              className="text-sm rounded-md border border-input bg-background px-3 py-2 text-foreground w-full sm:w-auto"
+              className="text-sm rounded-xl border border-input bg-background px-3 py-2 text-foreground w-full sm:w-auto"
             >
               <option value="">No category</option>
               {categories.map((c) => (
@@ -117,11 +117,11 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             </select>
           </div>
           <div className="flex gap-1.5 justify-end">
-            <Button size="sm" variant="ghost" onClick={handleCancelEdit}>
+            <Button size="sm" variant="ghost" onClick={handleCancelEdit} className="rounded-xl">
               <X className="h-3.5 w-3.5 mr-1" />
               Cancel
             </Button>
-            <Button size="sm" onClick={handleSaveEdit}>
+            <Button size="sm" onClick={handleSaveEdit} className="rounded-xl gradient-bg border-0">
               <Check className="h-3.5 w-3.5 mr-1" />
               Save
             </Button>
@@ -133,9 +133,9 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             <div className="flex-1 min-w-0">
               {category && (
                 <span
-                  className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full mb-1"
+                  className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full mb-1.5"
                   style={{
-                    backgroundColor: `hsl(${category.color} / 0.15)`,
+                    backgroundColor: `hsl(${category.color} / 0.12)`,
                     color: `hsl(${category.color})`,
                   }}
                 >
@@ -150,7 +150,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                 className={`h-4 w-4 transition-colors ${
                   prompt.is_favorite
                     ? "fill-yellow-400 text-yellow-400"
-                    : "text-muted-foreground hover:text-yellow-400"
+                    : "text-muted-foreground/40 hover:text-yellow-400"
                 }`}
               />
             </button>
@@ -165,7 +165,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
               {prompt.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[11px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground"
+                  className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/8 text-primary/70"
                 >
                   {tag}
                 </span>
@@ -173,27 +173,27 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-1 border-t border-border/50">
-            <span className="text-[11px] text-muted-foreground">
+          <div className="flex items-center justify-between pt-2 border-t border-border/40">
+            <span className="text-[10px] text-muted-foreground/60">
               {prompt.last_used_at
                 ? `Used ${new Date(prompt.last_used_at).toLocaleDateString()}`
                 : new Date(prompt.created_at).toLocaleDateString()}
             </span>
             <div className="flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleCopy}>
+              <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={handleCopy}>
                 <Copy className="h-3.5 w-3.5" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => {
+              <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => {
                 duplicatePrompt(prompt.id);
                 onUpdate();
                 toast.success("Prompt duplicated");
               }}>
                 <Files className="h-3.5 w-3.5" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditing(true)}>
+              <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => setEditing(true)}>
                 <Pencil className="h-3.5 w-3.5" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={handleDelete}>
+              <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg text-destructive hover:text-destructive" onClick={handleDelete}>
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             </div>

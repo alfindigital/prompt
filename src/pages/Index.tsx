@@ -21,7 +21,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { BottomNav } from "@/components/BottomNav";
 import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts } from "@/lib/prompts-store";
 import { Button } from "@/components/ui/button";
-import { Trash2, CheckSquare, ArrowUpDown } from "lucide-react";
+import { Trash2, CheckSquare } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -45,7 +45,6 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("default");
 
-  // Bulk select state
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
@@ -149,11 +148,11 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-28">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <Header />
 
-        <div className="space-y-5">
+        <div className="space-y-6">
           {activeTab === "add" ? (
             <div key="add" className="animate-fade-in">
               <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
@@ -161,116 +160,116 @@ const Index = () => {
           ) : (
             <div key="prompts" className="animate-fade-in">
               <div className="space-y-5">
-              <CategoryBar
-                categories={categories}
-                selectedCategory={selectedCategory}
-                onSelectCategory={setSelectedCategory}
-                onDataChange={refresh}
-              />
+                <CategoryBar
+                  categories={categories}
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={setSelectedCategory}
+                  onDataChange={refresh}
+                />
 
-              {prompts.length > 0 && (
-                <div className="space-y-3">
-                  <SearchFilterBar
-                    search={search}
-                    onSearchChange={setSearch}
-                    allTags={allTags}
-                    selectedTags={selectedTags}
-                    onTagToggle={(tag) => setSelectedTags((prev) =>
-                      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-                    )}
-                    onClearTags={() => setSelectedTags([])}
-                  />
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      {filtered.length} prompt{filtered.length !== 1 ? "s" : ""}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value as SortOption)}
-                        className="h-7 text-xs rounded-md border border-input bg-background px-2 text-foreground"
-                      >
-                        <option value="default">Default</option>
-                        <option value="name">Name A-Z</option>
-                        <option value="date">Newest</option>
-                        <option value="used">Most Used</option>
-                      </select>
-                      <Button
-                        size="sm"
-                        variant={selectMode ? "secondary" : "ghost"}
-                        className="h-7 text-xs gap-1"
-                        onClick={() => {
-                          setSelectMode(!selectMode);
-                          setSelectedIds(new Set());
-                        }}
-                      >
-                        <CheckSquare className="h-3.5 w-3.5" />
-                        {selectMode ? "Cancel" : "Select"}
-                      </Button>
+                {prompts.length > 0 && (
+                  <div className="space-y-3">
+                    <SearchFilterBar
+                      search={search}
+                      onSearchChange={setSearch}
+                      allTags={allTags}
+                      selectedTags={selectedTags}
+                      onTagToggle={(tag) => setSelectedTags((prev) =>
+                        prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+                      )}
+                      onClearTags={() => setSelectedTags([])}
+                    />
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-muted-foreground/60">
+                        {filtered.length} prompt{filtered.length !== 1 ? "s" : ""}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <select
+                          value={sortBy}
+                          onChange={(e) => setSortBy(e.target.value as SortOption)}
+                          className="h-8 text-xs rounded-lg bg-secondary/50 border-0 px-2.5 text-foreground focus:ring-1 focus:ring-primary/30"
+                        >
+                          <option value="default">Default</option>
+                          <option value="name">Name A-Z</option>
+                          <option value="date">Newest</option>
+                          <option value="used">Most Used</option>
+                        </select>
+                        <Button
+                          size="sm"
+                          variant={selectMode ? "secondary" : "ghost"}
+                          className="h-8 text-xs gap-1 rounded-lg"
+                          onClick={() => {
+                            setSelectMode(!selectMode);
+                            setSelectedIds(new Set());
+                          }}
+                        >
+                          <CheckSquare className="h-3.5 w-3.5" />
+                          {selectMode ? "Cancel" : "Select"}
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Bulk action bar */}
-              {selectMode && selectedIds.size > 0 && (
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20 animate-fade-in">
-                  <span className="text-sm font-medium text-destructive flex-1">
-                    {selectedIds.size} selected
-                  </span>
-                  <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={handleSelectAll}>
-                    {selectedIds.size === filtered.length ? "Deselect all" : "Select all"}
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button size="sm" variant="destructive" className="h-7 text-xs gap-1">
-                        <Trash2 className="h-3.5 w-3.5" />
-                        Delete
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Hapus {selectedIds.size} prompt?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Tindakan ini akan menghapus {selectedIds.size} prompt yang dipilih. Kamu bisa membatalkan lewat tombol Undo setelah dihapus.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Batal</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                          Hapus
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              )}
+                {/* Bulk action bar */}
+                {selectMode && selectedIds.size > 0 && (
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-destructive/8 border border-destructive/15 animate-fade-in">
+                    <span className="text-sm font-medium text-destructive flex-1">
+                      {selectedIds.size} selected
+                    </span>
+                    <Button size="sm" variant="ghost" className="h-7 text-xs rounded-lg" onClick={handleSelectAll}>
+                      {selectedIds.size === filtered.length ? "Deselect all" : "Select all"}
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button size="sm" variant="destructive" className="h-7 text-xs gap-1 rounded-lg">
+                          <Trash2 className="h-3.5 w-3.5" />
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="rounded-2xl">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Hapus {selectedIds.size} prompt?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tindakan ini akan menghapus {selectedIds.size} prompt yang dipilih. Kamu bisa membatalkan lewat tombol Undo setelah dihapus.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="rounded-xl">Batal</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleBulkDelete} className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            Hapus
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                )}
 
-              {prompts.length === 0 ? (
-                <EmptyState />
-              ) : filtered.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground py-12">
-                  No prompts match your search.
-                </p>
-              ) : (
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                  <SortableContext items={filtered.map((p) => p.id)} strategy={rectSortingStrategy}>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {filtered.map((p) => (
-                        <SortablePromptCard
-                          key={p.id}
-                          prompt={p}
-                          onUpdate={refresh}
-                          categories={categories}
-                          selectMode={selectMode}
-                          selected={selectedIds.has(p.id)}
-                          onToggleSelect={toggleSelect}
-                        />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
-              )}
+                {prompts.length === 0 ? (
+                  <EmptyState />
+                ) : filtered.length === 0 ? (
+                  <p className="text-center text-sm text-muted-foreground py-16">
+                    No prompts match your search.
+                  </p>
+                ) : (
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext items={filtered.map((p) => p.id)} strategy={rectSortingStrategy}>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {filtered.map((p) => (
+                          <SortablePromptCard
+                            key={p.id}
+                            prompt={p}
+                            onUpdate={refresh}
+                            categories={categories}
+                            selectMode={selectMode}
+                            selected={selectedIds.has(p.id)}
+                            onToggleSelect={toggleSelect}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                )}
               </div>
             </div>
           )}

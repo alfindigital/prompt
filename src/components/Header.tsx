@@ -3,12 +3,14 @@ import { Sparkles } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="flex items-center justify-between py-5 sm:py-7">
-      <div className="flex items-center gap-2.5">
-        <div className="h-8 w-8 rounded-lg border-2 border-primary/60 flex items-center justify-center">
-          <Sparkles className="h-4 w-4 text-primary" />
+    <header className="flex items-center justify-between py-6 sm:py-8">
+      <div className="flex items-center gap-3">
+        <div className="h-9 w-9 rounded-xl gradient-bg flex items-center justify-center shadow-md glow-primary">
+          <Sparkles className="h-4.5 w-4.5 text-white" strokeWidth={2} />
         </div>
-        <h1 className="text-lg sm:text-xl font-semibold tracking-tight">Promptly</h1>
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight gradient-text">Promptly</h1>
+        </div>
       </div>
       <ThemeToggle />
     </header>
