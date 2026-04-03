@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Category } from "@/lib/types";
 import { addCategory, deleteCategory, renameCategory } from "@/lib/prompts-store";
 import { toast } from "sonner";
-import { FolderOpen, Plus, Trash2, Pencil, Check, X } from "lucide-react";
+import { Plus, Trash2, Pencil, Check, X } from "lucide-react";
 
 interface CategoryBarProps {
   categories: Category[];
@@ -47,18 +46,17 @@ export function CategoryBar({ categories, selectedCategory, onSelectCategory, on
   };
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <FolderOpen className="h-4 w-4 text-muted-foreground" />
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Categories</span>
+    <div className="space-y-2.5">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Categories</span>
       </div>
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-2">
         <button
           onClick={() => onSelectCategory(null)}
-          className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+          className={`text-xs font-medium px-3.5 py-1.5 rounded-full transition-all ${
             selectedCategory === null
-              ? "bg-primary text-primary-foreground border-primary"
-              : "bg-secondary text-secondary-foreground border-border hover:border-primary/40"
+              ? "gradient-bg text-white shadow-sm glow-primary"
+              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }`}
         >
           All
@@ -70,7 +68,7 @@ export function CategoryBar({ categories, selectedCategory, onSelectCategory, on
                 <Input
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="h-7 text-xs w-24"
+                  className="h-7 text-xs w-24 rounded-full"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleRename(cat.id);
@@ -88,11 +86,16 @@ export function CategoryBar({ categories, selectedCategory, onSelectCategory, on
               <>
                 <button
                   onClick={() => onSelectCategory(selectedCategory === cat.id ? null : cat.id)}
-                  className={`text-xs px-3 py-1.5 rounded-full border transition-colors flex items-center gap-1.5 ${
+                  className={`text-xs font-medium px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5 ${
                     selectedCategory === cat.id
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-secondary text-secondary-foreground border-border hover:border-primary/40"
+                      ? "shadow-sm text-white"
+                      : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                   }`}
+                  style={
+                    selectedCategory === cat.id
+                      ? { backgroundColor: `hsl(${cat.color})` }
+                      : undefined
+                  }
                 >
                   <span
                     className="inline-block w-2 h-2 rounded-full shrink-0"
@@ -124,7 +127,7 @@ export function CategoryBar({ categories, selectedCategory, onSelectCategory, on
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="Name..."
-              className="h-7 text-xs w-24"
+              className="h-7 text-xs w-24 rounded-full"
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleAdd();
@@ -141,7 +144,7 @@ export function CategoryBar({ categories, selectedCategory, onSelectCategory, on
         ) : (
           <button
             onClick={() => setAdding(true)}
-            className="text-xs px-3 py-1.5 rounded-full border border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-foreground transition-colors flex items-center gap-1"
+            className="text-xs font-medium px-3.5 py-1.5 rounded-full border border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all flex items-center gap-1"
           >
             <Plus className="h-3 w-3" />
             New

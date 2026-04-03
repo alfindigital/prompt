@@ -57,7 +57,6 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
       toast.error("Title and content are required");
       return;
     }
-    // Combine selected tags with any remaining input
     const finalTags = [...selectedTags];
     if (tagsInput.trim()) {
       tagsInput.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean).forEach((t) => {
@@ -79,7 +78,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
     return (
       <button
         onClick={() => setExpanded(true)}
-        className="w-full rounded-xl border-2 border-dashed border-border hover:border-primary/40 transition-colors p-4 flex items-center gap-3 text-muted-foreground hover:text-foreground"
+        className="w-full rounded-2xl border-2 border-dashed border-border hover:border-primary/40 transition-all p-5 flex items-center gap-3 text-muted-foreground hover:text-foreground"
       >
         <Plus className="h-5 w-5" />
         <span className="text-sm font-medium">Add a new prompt...</span>
@@ -88,20 +87,20 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border bg-card p-4 space-y-3 shadow-sm">
+    <form onSubmit={handleSubmit} className="rounded-2xl border bg-card p-5 space-y-4 shadow-sm">
       <Input
         placeholder="Prompt title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         autoFocus
-        className="font-medium"
+        className="font-medium rounded-xl h-11"
       />
       <Textarea
         placeholder="Prompt content (supports markdown)"
         value={content}
         onChange={(e) => setContent(e.target.value)}
         rows={4}
-        className="resize-none text-sm"
+        className="resize-none text-sm rounded-xl"
       />
 
       {/* Tags */}
@@ -111,7 +110,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
             {selectedTags.map((tag) => (
               <span
                 key={tag}
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium"
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium"
               >
                 {tag}
                 <button type="button" onClick={() => removeTag(tag)} className="hover:text-destructive">
@@ -129,15 +128,15 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
             onFocus={() => setShowTagSuggestions(true)}
             onBlur={() => setTimeout(() => setShowTagSuggestions(false), 150)}
             onKeyDown={handleTagInputKeyDown}
-            className="text-sm"
+            className="text-sm rounded-xl"
           />
           {showTagSuggestions && filteredSuggestions.length > 0 && (
-            <div className="absolute z-10 top-full mt-1 w-full bg-popover border rounded-lg shadow-lg max-h-32 overflow-y-auto animate-scale-in">
+            <div className="absolute z-10 top-full mt-1 w-full glass border rounded-xl shadow-lg max-h-32 overflow-y-auto animate-scale-in">
               {filteredSuggestions.map((tag) => (
                 <button
                   key={tag}
                   type="button"
-                  className="w-full text-left px-3 py-1.5 text-sm hover:bg-accent transition-colors"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-primary/5 transition-colors first:rounded-t-xl last:rounded-b-xl"
                   onMouseDown={(e) => { e.preventDefault(); addTag(tag); }}
                 >
                   {tag}
@@ -153,7 +152,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
           <select
             value={categoryId || ""}
             onChange={(e) => setCategoryId(e.target.value || null)}
-            className="text-sm rounded-md border border-input bg-background px-3 py-2 text-foreground w-full sm:w-auto"
+            className="text-sm rounded-xl border border-input bg-background px-3 py-2 text-foreground w-full sm:w-auto"
           >
             <option value="">No category</option>
             {categories.map((c) => (
@@ -163,10 +162,10 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
         )}
       </div>
       <div className="flex gap-2 justify-end">
-        <Button type="button" variant="ghost" size="sm" onClick={() => setExpanded(false)}>
+        <Button type="button" variant="ghost" size="sm" onClick={() => setExpanded(false)} className="rounded-xl">
           Cancel
         </Button>
-        <Button type="submit" size="sm">
+        <Button type="submit" size="sm" className="rounded-xl gradient-bg border-0">
           <Plus className="h-4 w-4 mr-1" />
           Add Prompt
         </Button>

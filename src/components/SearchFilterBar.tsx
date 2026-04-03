@@ -21,17 +21,17 @@ export function SearchFilterBar({
   return (
     <div className="space-y-3">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
         <Input
           placeholder="Search prompts..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-9 pr-9"
+          className="pl-10 pr-10 h-11 rounded-xl bg-secondary/50 border-0 focus-visible:ring-1 focus-visible:ring-primary/30"
         />
         {search && (
           <button
             onClick={() => onSearchChange("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
@@ -42,7 +42,7 @@ export function SearchFilterBar({
           {selectedTags.length > 0 && (
             <button
               onClick={onClearTags}
-              className="text-[10px] px-2 py-0.5 rounded-full border border-destructive/40 text-destructive hover:bg-destructive/10 transition-colors"
+              className="text-[10px] font-medium px-2.5 py-1 rounded-full border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
             >
               Clear
             </button>
@@ -51,10 +51,10 @@ export function SearchFilterBar({
             <button
               key={tag}
               onClick={() => onTagToggle(tag)}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              className={`text-xs font-medium px-2.5 py-1 rounded-full transition-all ${
                 selectedTags.includes(tag)
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-secondary text-secondary-foreground border-border hover:border-primary/40"
+                  ? "gradient-bg text-white shadow-sm"
+                  : "bg-secondary/70 text-muted-foreground hover:bg-secondary hover:text-foreground"
               }`}
             >
               {tag}

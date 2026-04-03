@@ -1,14 +1,14 @@
-import { FileText } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center">
-      <div className="rounded-2xl bg-secondary p-5 mb-4">
-        <FileText className="h-10 w-10 text-muted-foreground" />
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="rounded-2xl gradient-bg p-5 mb-5 glow-primary">
+        <Sparkles className="h-8 w-8 text-white" />
       </div>
-      <h2 className="text-lg font-semibold mb-1">No prompts yet</h2>
-      <p className="text-sm text-muted-foreground max-w-xs">
-        Click "Add a new prompt" above to save your first reusable prompt.
+      <h2 className="text-lg font-bold mb-2">Mulai koleksi prompt-mu</h2>
+      <p className="text-sm text-muted-foreground max-w-[250px] leading-relaxed">
+        Ketuk tombol <span className="text-primary font-semibold">+</span> di bawah untuk menyimpan prompt pertamamu.
       </p>
     </div>
   );
