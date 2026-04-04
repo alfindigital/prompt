@@ -255,16 +255,21 @@ const Index = () => {
                   <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext items={filtered.map((p) => p.id)} strategy={rectSortingStrategy}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {filtered.map((p) => (
-                          <SortablePromptCard
+                        {filtered.map((p, i) => (
+                          <div
                             key={p.id}
-                            prompt={p}
-                            onUpdate={refresh}
-                            categories={categories}
-                            selectMode={selectMode}
-                            selected={selectedIds.has(p.id)}
-                            onToggleSelect={toggleSelect}
-                          />
+                            className="animate-fade-in"
+                            style={{ animationDelay: `${i * 60}ms`, animationFillMode: "backwards" }}
+                          >
+                            <SortablePromptCard
+                              prompt={p}
+                              onUpdate={refresh}
+                              categories={categories}
+                              selectMode={selectMode}
+                              selected={selectedIds.has(p.id)}
+                              onToggleSelect={toggleSelect}
+                            />
+                          </div>
                         ))}
                       </div>
                     </SortableContext>
