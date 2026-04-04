@@ -171,12 +171,18 @@
   @apply border-l-2 border-primary/30 pl-3 italic text-muted-foreground text-sm;
 }
 
-/* Card hover lift */
+/* Card micro-interactions */
 .card-hover {
-  @apply transition-all duration-200;
+  @apply transition-all duration-300 ease-out;
 }
 .card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px -12px hsl(var(--primary) / 0.15),
-              0 4px 12px -4px hsl(var(--foreground) / 0.06);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 32px -10px hsl(var(--primary) / 0.18),
+              0 4px 14px -4px hsl(var(--foreground) / 0.07);
+  border-color: hsl(var(--primary) / 0.25);
+}
+.card-hover:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: 0 2px 8px -4px hsl(var(--primary) / 0.1);
+  transition-duration: 100ms;
 }
