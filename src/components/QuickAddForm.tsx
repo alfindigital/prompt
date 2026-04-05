@@ -97,13 +97,17 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
         autoFocus
         className="font-medium rounded-xl h-11"
       />
-      <Textarea
-        placeholder="Prompt content (supports markdown)"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        rows={4}
-        className="resize-none text-sm rounded-xl"
-      />
+      <div className="rounded-xl border border-input bg-background p-2">
+        <MarkdownToolbar textareaRef={contentRef} value={content} onChange={setContent} />
+        <Textarea
+          ref={contentRef}
+          placeholder="Prompt content (supports markdown)"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          rows={4}
+          className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
+        />
+      </div>
 
       {/* Tags */}
       <div className="space-y-2">

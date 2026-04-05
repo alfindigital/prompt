@@ -94,12 +94,16 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             className="font-medium rounded-xl"
             autoFocus
           />
-          <Textarea
-            value={editContent}
-            onChange={(e) => setEditContent(e.target.value)}
-            rows={4}
-            className="resize-none text-sm rounded-xl"
-          />
+          <div className="rounded-xl border border-input bg-background p-2">
+            <MarkdownToolbar textareaRef={editContentRef} value={editContent} onChange={setEditContent} />
+            <Textarea
+              ref={editContentRef}
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              rows={4}
+              className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
+            />
+          </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Input
               value={editTags}
