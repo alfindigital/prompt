@@ -21,6 +21,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   const [editContent, setEditContent] = useState(prompt.content);
   const [editTags, setEditTags] = useState(prompt.tags.join(", "));
   const [editCategory, setEditCategory] = useState<string | null>(prompt.category);
+  const editContentRef = useRef<HTMLTextAreaElement>(null);
 
   const category = categories.find((c) => c.id === prompt.category);
 
