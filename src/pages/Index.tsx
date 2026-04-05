@@ -154,11 +154,11 @@ const Index = () => {
 
         <div className="space-y-6">
           {activeTab === "add" ? (
-            <div key="add" className="animate-fade-in">
+            <div key="add" className="animate-enter">
               <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
             </div>
           ) : (
-            <div key="prompts" className="animate-fade-in">
+            <div key="prompts" className="animate-enter">
               <div className="space-y-5">
                 <CategoryBar
                   categories={categories}
