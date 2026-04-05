@@ -21,6 +21,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
   const [categoryId, setCategoryId] = useState<string | null>(defaultCategory);
   const [expanded, setExpanded] = useState(forceExpanded);
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const categories = getCategories();
   const existingTags = getAllTags();
