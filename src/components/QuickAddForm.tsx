@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { addPrompt, getCategories, getAllTags } from "@/lib/prompts-store";
+import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { toast } from "sonner";
 import { Plus, X } from "lucide-react";
 
@@ -20,6 +21,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
   const [categoryId, setCategoryId] = useState<string | null>(defaultCategory);
   const [expanded, setExpanded] = useState(forceExpanded);
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const categories = getCategories();
   const existingTags = getAllTags();
@@ -95,13 +97,17 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
         autoFocus
         className="font-medium rounded-xl h-11"
       />
-      <Textarea
-        placeholder="Prompt content (supports markdown)"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        rows={4}
-        className="resize-none text-sm rounded-xl"
-      />
+      <div className="rounded-xl border border-input bg-background p-2">
+        <MarkdownToolbar textareaRef={contentRef} value={content} onChange={setContent} />
+        <Textarea
+          ref={contentRef}
+          placeholder="Prompt content (supports markdown)"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          rows={4}
+          className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
+        />
+      </div>
 
       {/* Tags */}
       <div className="space-y-2">

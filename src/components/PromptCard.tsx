@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prompt, Category } from "@/lib/types";
 import { updatePrompt, deletePrompt, duplicatePrompt } from "@/lib/prompts-store";
+import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   const [editContent, setEditContent] = useState(prompt.content);
   const [editTags, setEditTags] = useState(prompt.tags.join(", "));
   const [editCategory, setEditCategory] = useState<string | null>(prompt.category);
+  const editContentRef = useRef<HTMLTextAreaElement>(null);
 
   const category = categories.find((c) => c.id === prompt.category);
 
@@ -92,12 +94,16 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             className="font-medium rounded-xl"
             autoFocus
           />
-          <Textarea
-            value={editContent}
-            onChange={(e) => setEditContent(e.target.value)}
-            rows={4}
-            className="resize-none text-sm rounded-xl"
-          />
+          <div className="rounded-xl border border-input bg-background p-2">
+            <MarkdownToolbar textareaRef={editContentRef} value={editContent} onChange={setEditContent} />
+            <Textarea
+              ref={editContentRef}
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              rows={4}
+              className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
+            />
+          </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Input
               value={editTags}
