@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { addPrompt, getCategories, getAllTags } from "@/lib/prompts-store";
+import { MarkdownToolbar } from "@/components/MarkdownToolbar";
 import { toast } from "sonner";
 import { Plus, X } from "lucide-react";
 
