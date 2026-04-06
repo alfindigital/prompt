@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import {
   DndContext,
   closestCenter,
@@ -19,7 +19,7 @@ import { CategoryBar } from "@/components/CategoryBar";
 import { SortablePromptCard } from "@/components/SortablePromptCard";
 import { EmptyState } from "@/components/EmptyState";
 import { BottomNav } from "@/components/BottomNav";
-import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts } from "@/lib/prompts-store";
+import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts, addPrompt } from "@/lib/prompts-store";
 import { Button } from "@/components/ui/button";
 import { Trash2, CheckSquare } from "lucide-react";
 import {
@@ -47,6 +47,29 @@ const Index = () => {
 
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // Handle shared prompt from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shared = params.get("shared");
+    if (!shared) return;
+    try {
+      const payload = JSON.parse(decodeURIComponent(escape(atob(shared))));
+      if (payload.title && payload.content) {
+        addPrompt({
+          title: payload.title,
+          content: payload.content,
+          tags: payload.tags || [],
+          category: null,
+        });
+        refresh();
+        toast.success(`Imported shared prompt: "${payload.title}"`);
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    } catch {
+      toast.error("Invalid share link");
+    }
+  }, []);
 
   const filtered = useMemo(() => {
     let result = prompts;

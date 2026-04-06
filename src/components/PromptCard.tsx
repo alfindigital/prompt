@@ -7,7 +7,10 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Copy, Trash2, Pencil, Check, X, Files } from "lucide-react";
+import { Star, Copy, Trash2, Pencil, Check, X, Files, Share2, Link, FileText } from "lucide-react";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -31,6 +34,26 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
     updatePrompt(prompt.id, { last_used_at: new Date().toISOString() });
     onUpdate();
     toast.success("Copied to clipboard");
+  };
+
+  const handleCopyFormatted = async () => {
+    const lines = [`# ${prompt.title}`, ""];
+    if (prompt.tags.length > 0) lines.push(`Tags: ${prompt.tags.join(", ")}`, "");
+    lines.push(prompt.content);
+    await navigator.clipboard.writeText(lines.join("\n"));
+    toast.success("Copied as formatted text");
+  };
+
+  const handleShareLink = async () => {
+    const payload = {
+      title: prompt.title,
+      content: prompt.content,
+      tags: prompt.tags,
+    };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    const url = `${window.location.origin}${window.location.pathname}?shared=${encoded}`;
+    await navigator.clipboard.writeText(url);
+    toast.success("Share link copied to clipboard");
   };
 
   const handleFavorite = () => {
@@ -191,6 +214,23 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
               <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={handleCopy}>
                 <Copy className="h-3.5 w-3.5" />
               </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg">
+                    <Share2 className="h-3.5 w-3.5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="rounded-xl">
+                  <DropdownMenuItem onClick={handleCopyFormatted} className="gap-2 text-xs">
+                    <FileText className="h-3.5 w-3.5" />
+                    Copy as formatted text
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleShareLink} className="gap-2 text-xs">
+                    <Link className="h-3.5 w-3.5" />
+                    Copy share link
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => {
                 duplicatePrompt(prompt.id);
                 onUpdate();
