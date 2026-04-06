@@ -214,6 +214,23 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
               <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={handleCopy}>
                 <Copy className="h-3.5 w-3.5" />
               </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg">
+                    <Share2 className="h-3.5 w-3.5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="rounded-xl">
+                  <DropdownMenuItem onClick={handleCopyFormatted} className="gap-2 text-xs">
+                    <FileText className="h-3.5 w-3.5" />
+                    Copy as formatted text
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleShareLink} className="gap-2 text-xs">
+                    <Link className="h-3.5 w-3.5" />
+                    Copy share link
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => {
                 duplicatePrompt(prompt.id);
                 onUpdate();
