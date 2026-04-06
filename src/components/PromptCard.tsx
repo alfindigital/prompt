@@ -36,6 +36,26 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
     toast.success("Copied to clipboard");
   };
 
+  const handleCopyFormatted = async () => {
+    const lines = [`# ${prompt.title}`, ""];
+    if (prompt.tags.length > 0) lines.push(`Tags: ${prompt.tags.join(", ")}`, "");
+    lines.push(prompt.content);
+    await navigator.clipboard.writeText(lines.join("\n"));
+    toast.success("Copied as formatted text");
+  };
+
+  const handleShareLink = async () => {
+    const payload = {
+      title: prompt.title,
+      content: prompt.content,
+      tags: prompt.tags,
+    };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    const url = `${window.location.origin}${window.location.pathname}?shared=${encoded}`;
+    await navigator.clipboard.writeText(url);
+    toast.success("Share link copied to clipboard");
+  };
+
   const handleFavorite = () => {
     updatePrompt(prompt.id, { is_favorite: !prompt.is_favorite });
     onUpdate();
