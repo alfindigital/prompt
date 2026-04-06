@@ -26,7 +26,7 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
     a.download = `prompts-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success(`Exported ${data.length} prompts`);
+    toast.success(`Exported ${data.prompts.length} prompts & ${data.categories.length} categories`);
   };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,8 +35,8 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
     const reader = new FileReader();
     reader.onload = (ev) => {
       try {
-        const data = JSON.parse(ev.target?.result as string) as Prompt[];
-        const count = importPrompts(data);
+        const raw = JSON.parse(ev.target?.result as string);
+        const count = importPrompts(raw);
         onDataChange();
         toast.success(`Imported ${count} prompts`);
       } catch {

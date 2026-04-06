@@ -111,12 +111,27 @@ export function deletePrompts(ids: string[]): Prompt[] {
   return removed;
 }
 
-export function importPrompts(prompts: Prompt[]): number {
+export function importPrompts(data: Prompt[] | { prompts: Prompt[]; categories?: Category[] }): number {
+  const prompts = Array.isArray(data) ? data : data.prompts;
+  const cats = !Array.isArray(data) && data.categories ? data.categories : [];
+
+  // Import categories
+  if (cats.length > 0) {
+    const existing = readCategories();
+    const existingIds = new Set(existing.map((c) => c.id));
+    for (const c of cats) {
+      if (!existingIds.has(c.id)) {
+        existing.push(c);
+      }
+    }
+    writeCategories(existing);
+  }
+
+  // Import prompts
   const all = read();
   const existingIds = new Set(all.map((p) => p.id));
   let count = 0;
   for (const p of prompts) {
-    // Ensure category field exists for older imports
     const prompt = { ...p, category: p.category ?? null };
     if (existingIds.has(prompt.id)) {
       const idx = all.findIndex((x) => x.id === prompt.id);
@@ -130,8 +145,8 @@ export function importPrompts(prompts: Prompt[]): number {
   return count;
 }
 
-export function exportPrompts(): Prompt[] {
-  return read();
+export function exportPrompts(): { prompts: Prompt[]; categories: Category[] } {
+  return { prompts: read(), categories: readCategories() };
 }
 
 export function getAllTags(): string[] {
