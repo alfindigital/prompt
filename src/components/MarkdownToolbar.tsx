@@ -90,7 +90,7 @@ export function MarkdownToolbar({ textareaRef, value, onChange }: MarkdownToolba
           variant="ghost"
           size="icon"
           className="h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground"
-          onClick={() => apply(a)}
+          onClick={() => applyAction(a)}
           title={a.label}
         >
           {a.icon}
