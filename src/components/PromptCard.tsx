@@ -7,7 +7,10 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Copy, Trash2, Pencil, Check, X, Files } from "lucide-react";
+import { Star, Copy, Trash2, Pencil, Check, X, Files, Share2, Link, FileText } from "lucide-react";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface PromptCardProps {
   prompt: Prompt;
