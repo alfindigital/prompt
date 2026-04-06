@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import {
   DndContext,
   closestCenter,
@@ -19,7 +19,7 @@ import { CategoryBar } from "@/components/CategoryBar";
 import { SortablePromptCard } from "@/components/SortablePromptCard";
 import { EmptyState } from "@/components/EmptyState";
 import { BottomNav } from "@/components/BottomNav";
-import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts } from "@/lib/prompts-store";
+import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts, addPrompt } from "@/lib/prompts-store";
 import { Button } from "@/components/ui/button";
 import { Trash2, CheckSquare } from "lucide-react";
 import {
