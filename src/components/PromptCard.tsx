@@ -22,6 +22,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   const [editTags, setEditTags] = useState(prompt.tags.join(", "));
   const [editCategory, setEditCategory] = useState<string | null>(prompt.category);
   const editContentRef = useRef<HTMLTextAreaElement>(null);
+  const editShortcuts = useMarkdownShortcuts(editContentRef, editContent, setEditContent);
 
   const category = categories.find((c) => c.id === prompt.category);
 
@@ -100,6 +101,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
               ref={editContentRef}
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
+              onKeyDown={editShortcuts.handleKeyDown}
               rows={4}
               className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
             />
