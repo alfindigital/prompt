@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { addPrompt, getCategories, getAllTags } from "@/lib/prompts-store";
-import { MarkdownToolbar } from "@/components/MarkdownToolbar";
+import { MarkdownToolbar, useMarkdownShortcuts } from "@/components/MarkdownToolbar";
 import { toast } from "sonner";
 import { Plus, X } from "lucide-react";
 
@@ -25,7 +25,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
 
   const categories = getCategories();
   const existingTags = getAllTags();
-
+  const quickAddShortcuts = useMarkdownShortcuts(contentRef, content, setContent);
   const filteredSuggestions = useMemo(() => {
     const q = tagsInput.toLowerCase().trim();
     return existingTags.filter(
@@ -104,6 +104,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
           placeholder="Prompt content (supports markdown)"
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          onKeyDown={quickAddShortcuts.handleKeyDown}
           rows={4}
           className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
         />
