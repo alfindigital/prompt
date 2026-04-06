@@ -26,8 +26,12 @@ const actions: Action[] = [
   { icon: <Minus className="h-3.5 w-3.5" />, label: "Divider", prefix: "\n---\n", block: true },
 ];
 
-export function MarkdownToolbar({ textareaRef, value, onChange }: MarkdownToolbarProps) {
-  const apply = (action: Action) => {
+export function useMarkdownShortcuts(
+  textareaRef: React.RefObject<HTMLTextAreaElement>,
+  value: string,
+  onChange: (value: string) => void
+) {
+  const applyAction = (action: Action) => {
     const ta = textareaRef.current;
     if (!ta) return;
 
@@ -39,7 +43,6 @@ export function MarkdownToolbar({ textareaRef, value, onChange }: MarkdownToolba
     let cursorPos: number;
 
     if (action.block) {
-      // For block-level, insert at line start
       const lineStart = value.lastIndexOf("\n", start - 1) + 1;
       const before = value.substring(0, lineStart);
       const after = value.substring(lineStart);
@@ -50,7 +53,7 @@ export function MarkdownToolbar({ textareaRef, value, onChange }: MarkdownToolba
       newText = value.substring(0, start) + wrap + value.substring(end);
       cursorPos = selected
         ? start + wrap.length
-        : start + action.prefix.length + 4; // "text" length
+        : start + action.prefix.length + 4;
     }
 
     onChange(newText);
@@ -59,6 +62,24 @@ export function MarkdownToolbar({ textareaRef, value, onChange }: MarkdownToolba
       ta.setSelectionRange(cursorPos, cursorPos);
     });
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const mod = e.ctrlKey || e.metaKey;
+    if (!mod) return;
+    if (e.key === "b") {
+      e.preventDefault();
+      applyAction(actions.find((a) => a.label === "Bold")!);
+    } else if (e.key === "i") {
+      e.preventDefault();
+      applyAction(actions.find((a) => a.label === "Italic")!);
+    }
+  };
+
+  return { applyAction, handleKeyDown };
+}
+
+export function MarkdownToolbar({ textareaRef, value, onChange }: MarkdownToolbarProps) {
+  const { applyAction } = useMarkdownShortcuts(textareaRef, value, onChange);
 
   return (
     <div className="flex flex-wrap gap-0.5 border-b border-border/50 pb-1.5 mb-1">
