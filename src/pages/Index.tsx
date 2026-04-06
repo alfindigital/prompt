@@ -48,6 +48,29 @@ const Index = () => {
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
+  // Handle shared prompt from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shared = params.get("shared");
+    if (!shared) return;
+    try {
+      const payload = JSON.parse(decodeURIComponent(escape(atob(shared))));
+      if (payload.title && payload.content) {
+        addPrompt({
+          title: payload.title,
+          content: payload.content,
+          tags: payload.tags || [],
+          category: null,
+        });
+        refresh();
+        toast.success(`Imported shared prompt: "${payload.title}"`);
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    } catch {
+      toast.error("Invalid share link");
+    }
+  }, []);
+
   const filtered = useMemo(() => {
     let result = prompts;
     if (search.trim()) {
