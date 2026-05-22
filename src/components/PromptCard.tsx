@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Copy, Trash2, Pencil, Check, X, Files, Share2, Link, FileText } from "lucide-react";
+import { Star, Copy, Trash2, Pencil, Check, X, Files, Share2, Link, FileText, Eye, EyeOff } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -24,6 +24,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   const [editContent, setEditContent] = useState(prompt.content);
   const [editTags, setEditTags] = useState(prompt.tags.join(", "));
   const [editCategory, setEditCategory] = useState<string | null>(prompt.category);
+  const [editShowPreview, setEditShowPreview] = useState(false);
   const editContentRef = useRef<HTMLTextAreaElement>(null);
   const editShortcuts = useMarkdownShortcuts(editContentRef, editContent, setEditContent);
 
@@ -119,15 +120,39 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             autoFocus
           />
           <div className="rounded-xl border border-input bg-background p-2">
-            <MarkdownToolbar textareaRef={editContentRef} value={editContent} onChange={setEditContent} />
-            <Textarea
-              ref={editContentRef}
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              onKeyDown={editShortcuts.handleKeyDown}
-              rows={4}
-              className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
-            />
+            <div className="flex items-center justify-between gap-2">
+              <MarkdownToolbar textareaRef={editContentRef} value={editContent} onChange={setEditContent} />
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={() => setEditShowPreview((v) => !v)}
+                className="h-7 px-2 text-xs rounded-lg shrink-0"
+                title={editShowPreview ? "Hide preview" : "Show preview"}
+              >
+                {editShowPreview ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                <span className="ml-1 hidden sm:inline">Preview</span>
+              </Button>
+            </div>
+            <div className={editShowPreview ? "grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1" : ""}>
+              <Textarea
+                ref={editContentRef}
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                onKeyDown={editShortcuts.handleKeyDown}
+                rows={4}
+                className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
+              />
+              {editShowPreview && (
+                <div className="prose-prompt text-sm p-1 min-h-[80px] border-l sm:pl-3 border-border/40 overflow-auto">
+                  {editContent.trim() ? (
+                    <ReactMarkdown>{editContent}</ReactMarkdown>
+                  ) : (
+                    <p className="text-muted-foreground/50 italic">Preview will appear here...</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Input

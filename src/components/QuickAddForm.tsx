@@ -1,11 +1,12 @@
 import { useState, useMemo, useRef } from "react";
+import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { addPrompt, getCategories, getAllTags } from "@/lib/prompts-store";
 import { MarkdownToolbar, useMarkdownShortcuts } from "@/components/MarkdownToolbar";
 import { toast } from "sonner";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Eye, EyeOff } from "lucide-react";
 
 interface QuickAddFormProps {
   onAdd: () => void;
@@ -21,6 +22,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
   const [categoryId, setCategoryId] = useState<string | null>(defaultCategory);
   const [expanded, setExpanded] = useState(forceExpanded);
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const categories = getCategories();
@@ -98,16 +100,40 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
         className="font-medium rounded-xl h-11"
       />
       <div className="rounded-xl border border-input bg-background p-2">
-        <MarkdownToolbar textareaRef={contentRef} value={content} onChange={setContent} />
-        <Textarea
-          ref={contentRef}
-          placeholder="Prompt content (supports markdown)"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onKeyDown={quickAddShortcuts.handleKeyDown}
-          rows={4}
-          className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
-        />
+        <div className="flex items-center justify-between gap-2">
+          <MarkdownToolbar textareaRef={contentRef} value={content} onChange={setContent} />
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={() => setShowPreview((v) => !v)}
+            className="h-7 px-2 text-xs rounded-lg shrink-0"
+            title={showPreview ? "Hide preview" : "Show preview"}
+          >
+            {showPreview ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+            <span className="ml-1 hidden sm:inline">Preview</span>
+          </Button>
+        </div>
+        <div className={showPreview ? "grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1" : ""}>
+          <Textarea
+            ref={contentRef}
+            placeholder="Prompt content (supports markdown)"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            onKeyDown={quickAddShortcuts.handleKeyDown}
+            rows={4}
+            className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
+          />
+          {showPreview && (
+            <div className="prose-prompt text-sm p-1 min-h-[80px] border-l sm:pl-3 border-border/40 overflow-auto">
+              {content.trim() ? (
+                <ReactMarkdown>{content}</ReactMarkdown>
+              ) : (
+                <p className="text-muted-foreground/50 italic">Preview will appear here...</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Tags */}
