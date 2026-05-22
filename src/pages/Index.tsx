@@ -183,6 +183,7 @@ const Index = () => {
           ) : (
             <div key="prompts" className="animate-enter">
               <div className="space-y-5">
+                <h2 className="sr-only">Categories</h2>
                 <CategoryBar
                   categories={categories}
                   selectedCategory={selectedCategory}
@@ -268,6 +269,7 @@ const Index = () => {
                   </div>
                 )}
 
+                <h2 className="sr-only">Your prompts</h2>
                 {prompts.length === 0 ? (
                   <EmptyState />
                 ) : filtered.length === 0 ? (
