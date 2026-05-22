@@ -1,11 +1,12 @@
 import { useState, useMemo, useRef } from "react";
+import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { addPrompt, getCategories, getAllTags } from "@/lib/prompts-store";
 import { MarkdownToolbar, useMarkdownShortcuts } from "@/components/MarkdownToolbar";
 import { toast } from "sonner";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Eye, EyeOff } from "lucide-react";
 
 interface QuickAddFormProps {
   onAdd: () => void;
