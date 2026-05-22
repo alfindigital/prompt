@@ -301,7 +301,7 @@ const Index = () => {
               </div>
             </div>
           )}
-        </div>
+        </main>
       </div>
 
       <BottomNav activeTab={activeTab} onTabChange={handleTabChange} onDataChange={refresh} />
