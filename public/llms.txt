@@ -1,0 +1,7 @@
+# Promptly
+
+> A personal AI prompt library — save, organize, search, and reuse your favorite prompts. Runs entirely in the browser with local storage.
+
+## Pages
+
+- [Promptly](/): The main prompt library — create, categorize, tag, search, favorite, duplicate, share, import, and export reusable AI prompts.
