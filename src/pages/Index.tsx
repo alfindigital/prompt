@@ -175,7 +175,7 @@ const Index = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <Header />
 
-        <div className="space-y-6">
+        <main className="space-y-6" aria-label="Prompt library">
           {activeTab === "add" ? (
             <div key="add" className="animate-enter">
               <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
