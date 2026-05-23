@@ -58,7 +58,7 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
           >
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-sm">Settings</h3>
-              <button onClick={() => setShowSettings(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => setShowSettings(false)} aria-label="Close settings" className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -71,7 +71,7 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
                 <Upload className="h-4 w-4 text-primary" />
                 Import Prompts
               </Button>
-              <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
+              <input ref={fileRef} type="file" accept=".json" aria-label="Import prompts JSON file" className="hidden" onChange={handleImport} />
             </div>
           </div>
         </div>
@@ -85,6 +85,7 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
               {/* Prompts */}
               <button
                 onClick={() => { onTabChange("prompts"); setShowSettings(false); }}
+                aria-label="View prompts"
                 className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-all ${
                   activeTab === "prompts" && !showSettings
                     ? "text-primary bg-primary/10"
@@ -98,6 +99,7 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
               {/* Add - floating raised */}
               <button
                 onClick={() => { onTabChange("add"); setShowSettings(false); }}
+                aria-label="Add new prompt"
                 className="relative -mt-8"
               >
                 <div className={`rounded-2xl p-4 shadow-lg transition-all ${
@@ -112,6 +114,7 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
               {/* Settings */}
               <button
                 onClick={() => setShowSettings(!showSettings)}
+                aria-label="Open settings"
                 className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-all ${
                   showSettings
                     ? "text-primary bg-primary/10"

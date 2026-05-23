@@ -89,6 +89,7 @@ export function MarkdownToolbar({ textareaRef, value, onChange }: MarkdownToolba
           type="button"
           variant="ghost"
           size="icon"
+          aria-label={a.label}
           className="h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground"
           onClick={() => applyAction(a)}
           title={a.label}

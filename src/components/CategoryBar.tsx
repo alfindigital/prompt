@@ -68,6 +68,7 @@ export function CategoryBar({ categories, selectedCategory, onSelectCategory, on
                 <Input
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
+                  aria-label="Rename category"
                   className="h-7 text-xs w-24 rounded-full"
                   autoFocus
                   onKeyDown={(e) => {
@@ -127,6 +128,7 @@ export function CategoryBar({ categories, selectedCategory, onSelectCategory, on
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="Name..."
+              aria-label="New category name"
               className="h-7 text-xs w-24 rounded-full"
               autoFocus
               onKeyDown={(e) => {

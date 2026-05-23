@@ -94,6 +94,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
     <form onSubmit={handleSubmit} className="rounded-2xl border bg-card p-5 space-y-4 shadow-sm">
       <Input
         placeholder="Prompt title"
+        aria-label="Prompt title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         autoFocus
@@ -118,6 +119,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
           <Textarea
             ref={contentRef}
             placeholder="Prompt content (supports markdown)"
+            aria-label="Prompt content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={quickAddShortcuts.handleKeyDown}
@@ -156,6 +158,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
         <div className="relative">
           <Input
             placeholder="Add tags..."
+            aria-label="Add tags"
             value={tagsInput}
             onChange={(e) => { setTagsInput(e.target.value); setShowTagSuggestions(true); }}
             onFocus={() => setShowTagSuggestions(true)}

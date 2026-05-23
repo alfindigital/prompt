@@ -116,6 +116,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
           <Input
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
+            aria-label="Prompt title"
             className="font-medium rounded-xl"
             autoFocus
           />
@@ -140,6 +141,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
                 onKeyDown={editShortcuts.handleKeyDown}
+                aria-label="Prompt content"
                 rows={4}
                 className="resize-none text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-1 min-h-[80px]"
               />
@@ -159,6 +161,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
               value={editTags}
               onChange={(e) => setEditTags(e.target.value)}
               placeholder="Tags (comma-separated)"
+              aria-label="Tags"
               className="text-sm flex-1 rounded-xl"
             />
             <select
@@ -236,12 +239,12 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                 : new Date(prompt.created_at).toLocaleDateString()}
             </span>
             <div className="flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-              <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={handleCopy}>
+              <Button size="icon" variant="ghost" aria-label="Copy prompt" className="h-7 w-7 rounded-lg" onClick={handleCopy}>
                 <Copy className="h-3.5 w-3.5" />
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg">
+                  <Button size="icon" variant="ghost" aria-label="Share prompt" className="h-7 w-7 rounded-lg">
                     <Share2 className="h-3.5 w-3.5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -256,17 +259,17 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => {
+              <Button size="icon" variant="ghost" aria-label="Duplicate prompt" className="h-7 w-7 rounded-lg" onClick={() => {
                 duplicatePrompt(prompt.id);
                 onUpdate();
                 toast.success("Prompt duplicated");
               }}>
                 <Files className="h-3.5 w-3.5" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => setEditing(true)}>
+              <Button size="icon" variant="ghost" aria-label="Edit prompt" className="h-7 w-7 rounded-lg" onClick={() => setEditing(true)}>
                 <Pencil className="h-3.5 w-3.5" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg text-destructive hover:text-destructive" onClick={handleDelete}>
+              <Button size="icon" variant="ghost" aria-label="Delete prompt" className="h-7 w-7 rounded-lg text-destructive hover:text-destructive" onClick={handleDelete}>
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             </div>
