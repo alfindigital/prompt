@@ -23,7 +23,9 @@ export function SearchFilterBar({
       <div className="relative">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
         <Input
+          type="search"
           placeholder="Search prompts..."
+          aria-label="Search prompts"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-10 pr-10 h-11 rounded-xl bg-secondary/50 border-0 focus-visible:ring-1 focus-visible:ring-primary/30"
@@ -31,6 +33,7 @@ export function SearchFilterBar({
         {search && (
           <button
             onClick={() => onSearchChange("")}
+            aria-label="Clear search"
             className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="h-4 w-4" />

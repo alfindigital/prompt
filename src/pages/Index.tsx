@@ -175,7 +175,7 @@ const Index = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <Header />
 
-        <div className="space-y-6">
+        <main className="space-y-6" aria-label="Prompt library">
           {activeTab === "add" ? (
             <div key="add" className="animate-enter">
               <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
@@ -183,6 +183,7 @@ const Index = () => {
           ) : (
             <div key="prompts" className="animate-enter">
               <div className="space-y-5">
+                <h2 className="sr-only">Categories</h2>
                 <CategoryBar
                   categories={categories}
                   selectedCategory={selectedCategory}
@@ -268,6 +269,7 @@ const Index = () => {
                   </div>
                 )}
 
+                <h2 className="sr-only">Your prompts</h2>
                 {prompts.length === 0 ? (
                   <EmptyState />
                 ) : filtered.length === 0 ? (
@@ -301,7 +303,7 @@ const Index = () => {
               </div>
             </div>
           )}
-        </div>
+        </main>
       </div>
 
       <BottomNav activeTab={activeTab} onTabChange={handleTabChange} onDataChange={refresh} />
