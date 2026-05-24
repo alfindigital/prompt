@@ -201,8 +201,8 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
         <Button type="button" variant="ghost" size="sm" onClick={() => setExpanded(false)} className="rounded-xl">
           Cancel
         </Button>
-        <Button type="submit" size="sm" className="rounded-xl gradient-bg border-0">
-          <Plus className="h-4 w-4 mr-1" />
+        <Button type="submit" size="sm" className="rounded-xl">
+          <Plus className="h-4 w-4 mr-1" strokeWidth={1.75} />
           Add Prompt
         </Button>
       </div>

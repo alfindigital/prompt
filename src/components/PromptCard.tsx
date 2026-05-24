@@ -110,7 +110,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   };
 
   return (
-    <div className="group rounded-2xl border bg-card p-4 sm:p-5 card-hover flex flex-col gap-3">
+    <div className="group rounded-xl border bg-card p-3 sm:p-4 card-hover flex flex-col gap-2.5">
       {editing ? (
         <>
           <Input
@@ -180,8 +180,8 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
               <X className="h-3.5 w-3.5 mr-1" />
               Cancel
             </Button>
-            <Button size="sm" onClick={handleSaveEdit} className="rounded-xl gradient-bg border-0">
-              <Check className="h-3.5 w-3.5 mr-1" />
+            <Button size="sm" onClick={handleSaveEdit} className="rounded-xl">
+              <Check className="h-3.5 w-3.5 mr-1" strokeWidth={1.75} />
               Save
             </Button>
           </div>
@@ -202,15 +202,16 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                   {category.name}
                 </span>
               )}
-              <h3 className="font-semibold text-sm leading-snug">{prompt.title}</h3>
+              <h3 className="font-display font-semibold text-sm leading-snug">{prompt.title}</h3>
             </div>
             <button onClick={handleFavorite} className="shrink-0 mt-0.5" aria-label="Toggle favorite">
               <Star
                 className={`h-4 w-4 transition-colors ${
                   prompt.is_favorite
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "text-muted-foreground/40 hover:text-yellow-400"
+                    ? "fill-primary text-primary"
+                    : "text-muted-foreground/40 hover:text-primary"
                 }`}
+                strokeWidth={1.75}
               />
             </button>
           </div>

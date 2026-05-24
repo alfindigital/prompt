@@ -54,10 +54,10 @@ export function SearchFilterBar({
             <button
               key={tag}
               onClick={() => onTagToggle(tag)}
-              className={`text-xs font-medium px-2.5 py-1 rounded-full transition-all ${
+              className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors ${
                 selectedTags.includes(tag)
-                  ? "gradient-bg text-white shadow-sm"
-                  : "bg-secondary/70 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
               }`}
             >
               {tag}

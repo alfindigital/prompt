@@ -46,16 +46,16 @@ export function CategoryBar({ categories, selectedCategory, onSelectCategory, on
   };
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Categories</span>
+        <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.18em]">Categories</span>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         <button
           onClick={() => onSelectCategory(null)}
-          className={`text-xs font-medium px-3.5 py-1.5 rounded-full transition-all ${
+          className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
             selectedCategory === null
-              ? "gradient-bg text-white shadow-sm glow-primary"
+              ? "bg-primary text-primary-foreground"
               : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }`}
         >

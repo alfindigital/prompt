@@ -1,54 +1,69 @@
 
+# Rombak UI/UX — Promptly Rebrand
 
-# Prompt Library SPA
+## Arah desain
+- **Mobile-first, compact**: padding lebih ketat, tap target tetap ≥40px, grid 1 kolom di mobile → 2 di sm → 3 di lg.
+- **Light mode default** (hapus auto-dark, hapus persist "dark" jika belum ada pilihan).
+- **Brand color**: purple solid `hsl(255 55% 52%)` sebagai primary tunggal. Hapus semua `gradient-text` / `gradient-bg` / `glow-primary` gradient. Teal accent dihapus agar konsisten satu warna brand.
+- **Typography**: Syne (headings, 600/700) + Plus Jakarta Sans (body, 400/500/600). JetBrains Mono tetap untuk `code/pre`.
+- **Icon style**: semua outline (Lucide stroke 1.75). App icon di header → mark monokrom outline ungu, bukan ikon Sparkles dalam kotak gradient. Favicon + theme toggle juga outline monokrom.
+- **Less emoji**: sapu emoji di copy (EmptyState, QuickAddForm placeholder, toast, dll) → ganti ikon outline / text bersih.
 
-## Overview
-A minimalist, single-page Prompt Library app with Google OAuth, Supabase backend, and a clean card-based UI for managing reusable prompts.
+## Perubahan file
 
-## Backend (Supabase)
+### `index.html`
+- `<html>` tanpa `class="dark"` default.
+- Update `<title>`, meta description ke tone branded.
+- Ganti favicon ke SVG mark outline ungu baru (`/brand-mark.svg`).
+- Preload Syne + Plus Jakarta Sans (hapus Space Grotesk).
 
-### Database
-- **`prompts`** table with columns: `id` (uuid PK), `user_id` (uuid, references auth.users, not null), `title` (text, not null), `content` (text, not null), `tags` (text[]), `is_favorite` (boolean, default false), `created_at` (timestamptz, default now()), `last_used_at` (timestamptz, nullable)
-- **RLS policies**: Enable RLS, allow authenticated users to SELECT/INSERT/UPDATE/DELETE only rows where `user_id = auth.uid()`
+### `src/index.css`
+- Ganti import Google Fonts → Syne + Plus Jakarta Sans + JetBrains Mono.
+- Tokens light:
+  - `--background: 250 25% 98%`
+  - `--foreground: 255 25% 12%`
+  - `--primary: 255 55% 52%` / fg `0 0% 100%`
+  - `--secondary: 250 20% 94%`
+  - `--muted-foreground: 255 10% 45%`
+  - `--accent: 255 55% 52%` (= primary, hapus teal)
+  - `--border: 250 15% 90%`, `--radius: 0.75rem`
+- Tokens dark seimbang dengan primary `255 65% 68%`.
+- Hapus `--gradient-primary`, `--gradient-end`, `.gradient-text`, `.gradient-bg`, `.glow-primary`.
+- `body { font-family: 'Plus Jakarta Sans', ... }`, heading helper `.font-display { font-family: 'Syne'; letter-spacing: -0.02em; }`.
+- Tambah utility `.brand-mark` (border outline + ikon stroke) untuk app icon.
+- Kurangi animasi transisi global yang terlalu lambat → 200ms.
 
-### Auth
-- Google OAuth via Supabase Auth
-- Auth gate component wrapping the app — redirect to login if unauthenticated
+### `tailwind.config.ts`
+- `fontFamily.display: ['Syne', ...]`, `fontFamily.sans: ['Plus Jakarta Sans', ...]`, `fontFamily.mono: ['JetBrains Mono', ...]`.
+- Hapus referensi gradient.
 
-## Pages & Components
+### `src/components/Header.tsx`
+- Brand mark: kotak `border border-primary/40 rounded-lg` berisi ikon outline (Library / Command stroke 1.75 ungu), bukan Sparkles dalam gradient.
+- Judul: `font-display font-semibold text-foreground` (tanpa gradient-text). Mobile: judul lebih pendek "Promptly", subtitle "AI Prompt Library" disembunyikan di <sm.
+- Padding header diperkecil untuk mobile.
 
-### Auth Gate
-- Full-screen centered login with "Sign in with Google" button
-- On success, render main app; on no session, show login
+### `src/components/ThemeToggle.tsx`
+- Ganti jadi tombol ikon sederhana (Sun/Moon outline, stroke 1.75) tanpa track gradient. Ukuran 36px. State: `aria-pressed`.
 
-### Main App (single page)
-- **Header**: App title, user avatar, sign-out button
-- **Quick Add Form**: Inline form at top — title input, content textarea, comma-separated tags input, submit button. No modal.
-- **Search & Filter Bar**: Search input for real-time filtering across title/content/tags. Row of clickable tag chips (aggregated from all user prompts) to filter by tag.
-- **Prompt Grid**: Responsive card grid (1 col mobile, 2 col tablet, 3 col desktop)
-  - Each card shows: title, rendered markdown content (truncated), tag chips, favorite toggle (star icon), copy button, delete button, edit button
-  - Sorted: favorites first, then by `created_at` desc
-- **Empty State**: Friendly illustration/text with CTA pointing to the quick add form
+### `src/components/BottomNav.tsx`, `NavLink.tsx`
+- Ikon outline stroke 1.75, label kecil, indikator aktif: garis tipis ungu di atas + warna primary, hapus efek glow/gradient.
+- Safe-area bawah dipertahankan.
 
-### Card Interactions
-- **Copy**: One-click copies content to clipboard, updates `last_used_at`, shows toast confirmation
-- **Favorite toggle**: Optimistic UI toggle of `is_favorite`
-- **Edit**: Inline or expandable edit mode on the card
-- **Delete**: With confirmation toast/undo
+### `src/components/QuickAddForm.tsx`, `EmptyState.tsx`, `SearchFilterBar.tsx`, `CategoryBar.tsx`, `PromptCard.tsx`, `SortablePromptCard.tsx`
+- Sapu emoji di copy & placeholder, ganti ikon Lucide outline.
+- Compact: padding kartu `p-3 sm:p-4`, radius `rounded-xl`, border `border-border` tipis, hover state subtle (tanpa scale berlebihan).
+- Tombol primary: solid ungu, tanpa shadow gradient.
+- Search bar full-width di mobile, sort/select stacked rapi.
 
-### Export/Import
-- **Export**: Button in header/toolbar downloads all prompts as JSON file
-- **Import**: File upload button parses JSON and upserts prompts
+### `src/pages/Index.tsx`
+- Tidak ada perubahan logika; hanya menyesuaikan spacing/kelas untuk compact mobile-first (gap-4 → gap-3 di mobile, container `px-3 sm:px-5`).
 
-## Key Libraries
-- `react-markdown` for rendering markdown content
-- `@supabase/supabase-js` for auth & database
-- `sonner` (already installed) for toast notifications
-- shadcn/ui components for buttons, inputs, cards, dialogs
+### Brand mark / favicon
+- Buat `public/brand-mark.svg` — outline monokrom (currentColor) ungu: glyph sederhana (mis. kurung kurawal `{ }` + dot, mewakili prompt). Dipakai sebagai favicon + di Header.
+- Hapus referensi favicon lama jika perlu.
 
-## UX Details
-- Optimistic updates on favorite toggle, add, delete
-- Real-time search filters client-side from cached prompt list
-- Mobile-first: stacked layout, touch-friendly tap targets
-- Minimal, clean aesthetic with the existing shadcn design tokens
+### Memory
+- Update `mem://design/tokens` & `mem://index.md`: Syne + Plus Jakarta Sans, purple solid (no gradient), outline icons, light default.
 
+## Yang TIDAK diubah
+- Struktur data, localStorage store, routing, fitur DnD/select/bulk, share link, SEO JSON-LD, sitemap, Google verification meta.
