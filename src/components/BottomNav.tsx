@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { List, Plus, Settings, Download, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportPrompts, importPrompts } from "@/lib/prompts-store";
-import { Prompt } from "@/lib/types";
 import { toast } from "sonner";
 
 type Tab = "prompts" | "add" | "settings";
@@ -47,9 +46,13 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
     if (fileRef.current) fileRef.current.value = "";
   };
 
+  const navItem = (active: boolean) =>
+    `flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-lg transition-colors ${
+      active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+    }`;
+
   return (
     <>
-      {/* Settings overlay */}
       {showSettings && (
         <div className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm animate-fade-in" onClick={() => setShowSettings(false)}>
           <div
@@ -57,18 +60,18 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm">Settings</h3>
+              <h3 className="font-display font-semibold text-sm">Settings</h3>
               <button onClick={() => setShowSettings(false)} aria-label="Close settings" className="text-muted-foreground hover:text-foreground transition-colors">
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4" strokeWidth={1.75} />
               </button>
             </div>
             <div className="flex flex-col gap-2">
               <Button variant="outline" className="w-full justify-start gap-3 h-11 rounded-xl" onClick={handleExport}>
-                <Download className="h-4 w-4 text-primary" />
+                <Download className="h-4 w-4 text-primary" strokeWidth={1.75} />
                 Export Prompts
               </Button>
               <Button variant="outline" className="w-full justify-start gap-3 h-11 rounded-xl" onClick={() => fileRef.current?.click()}>
-                <Upload className="h-4 w-4 text-primary" />
+                <Upload className="h-4 w-4 text-primary" strokeWidth={1.75} />
                 Import Prompts
               </Button>
               <input ref={fileRef} type="file" accept=".json" aria-label="Import prompts JSON file" className="hidden" onChange={handleImport} />
@@ -77,51 +80,39 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
         </div>
       )}
 
-      {/* Bottom navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
-        <div className="max-w-lg mx-auto px-4 pb-2">
-          <div className="glass border rounded-2xl shadow-lg">
-            <div className="flex items-center justify-around px-6 py-2.5">
-              {/* Prompts */}
+        <div className="max-w-lg mx-auto px-4 pb-3">
+          <div className="glass border rounded-2xl shadow-md">
+            <div className="flex items-center justify-around px-4 py-2">
               <button
                 onClick={() => { onTabChange("prompts"); setShowSettings(false); }}
                 aria-label="View prompts"
-                className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-all ${
-                  activeTab === "prompts" && !showSettings
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={navItem(activeTab === "prompts" && !showSettings)}
               >
-                <List className="h-5 w-5" strokeWidth={activeTab === "prompts" && !showSettings ? 2.5 : 1.5} />
+                <List className="h-5 w-5" strokeWidth={1.75} />
                 <span className="text-[10px] font-medium">Prompts</span>
               </button>
 
-              {/* Add - floating raised */}
               <button
                 onClick={() => { onTabChange("add"); setShowSettings(false); }}
                 aria-label="Add new prompt"
-                className="relative -mt-8"
+                className="relative -mt-7"
               >
-                <div className={`rounded-2xl p-4 shadow-lg transition-all ${
+                <div className={`rounded-xl p-3.5 border transition-colors ${
                   activeTab === "add" && !showSettings
-                    ? "gradient-bg text-white shadow-primary/40 scale-110 glow-primary"
-                    : "gradient-bg text-white hover:shadow-primary/30 hover:scale-105 animate-[pulse_3s_ease-in-out_infinite]"
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background text-primary border-primary/40 hover:bg-primary/10"
                 }`}>
-                  <Plus className="h-5 w-5" strokeWidth={2.5} />
+                  <Plus className="h-5 w-5" strokeWidth={1.75} />
                 </div>
               </button>
 
-              {/* Settings */}
               <button
                 onClick={() => setShowSettings(!showSettings)}
                 aria-label="Open settings"
-                className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-all ${
-                  showSettings
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={navItem(showSettings)}
               >
-                <Settings className="h-5 w-5" strokeWidth={showSettings ? 2.5 : 1.5} />
+                <Settings className="h-5 w-5" strokeWidth={1.75} />
                 <span className="text-[10px] font-medium">Settings</span>
               </button>
             </div>

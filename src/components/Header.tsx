@@ -1,15 +1,17 @@
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Sparkles } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="flex items-center justify-between py-6 sm:py-8">
-      <div className="flex items-center gap-3">
-        <div className="h-9 w-9 rounded-xl gradient-bg flex items-center justify-center shadow-md glow-primary">
-          <Sparkles className="h-4.5 w-4.5 text-white" strokeWidth={2} />
-        </div>
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight gradient-text">Promptly — AI Prompt Library</h1>
+    <header className="flex items-center justify-between py-4 sm:py-6">
+      <div className="flex items-center gap-2.5">
+        <img src="/brand-mark.svg" alt="" aria-hidden="true" className="h-9 w-9" />
+        <div className="flex flex-col leading-tight">
+          <h1 className="font-display text-lg sm:text-xl font-semibold tracking-tight text-foreground">
+            Promptly
+          </h1>
+          <span className="hidden sm:block text-[11px] font-medium text-muted-foreground tracking-wide uppercase">
+            AI Prompt Library
+          </span>
         </div>
       </div>
       <ThemeToggle />
