@@ -17,12 +17,12 @@ export function ThemeToggle() {
       onClick={() => setDark(!dark)}
       aria-label="Toggle theme"
       aria-pressed={dark}
-      className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-border text-foreground/70 hover:text-primary hover:border-primary/40 transition-colors"
+      className="h-9 w-9 inline-flex items-center justify-center rounded-full hover:bg-secondary text-foreground/70 hover:text-primary transition-colors"
     >
       {dark ? (
-        <Moon className="h-4 w-4" strokeWidth={1.75} />
+        <Moon className="h-5 w-5" strokeWidth={1.75} />
       ) : (
-        <Sun className="h-4 w-4" strokeWidth={1.75} />
+        <Sun className="h-5 w-5" strokeWidth={1.75} />
       )}
     </button>
   );
