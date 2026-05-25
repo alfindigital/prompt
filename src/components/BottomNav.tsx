@@ -82,7 +82,7 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
         <div className="max-w-lg mx-auto px-4 pb-3">
-          <div className="glass border rounded-2xl shadow-md">
+          <div className="glass border border-primary/25 rounded-2xl shadow-lg shadow-primary/10 bg-primary/[0.06]">
             <div className="flex items-center justify-around px-4 py-2">
               <button
                 onClick={() => { onTabChange("prompts"); setShowSettings(false); }}
@@ -100,7 +100,7 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
               >
                 <div className={`rounded-xl p-3.5 border transition-colors ${
                   activeTab === "add" && !showSettings
-                    ? "bg-primary text-primary-foreground border-primary"
+                    ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/30"
                     : "bg-background text-primary border-primary/40 hover:bg-primary/10"
                 }`}>
                   <Plus className="h-5 w-5" strokeWidth={1.75} />

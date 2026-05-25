@@ -13,6 +13,7 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
 import { CategoryBar } from "@/components/CategoryBar";
@@ -304,6 +305,8 @@ const Index = () => {
             </div>
           )}
         </main>
+
+        <Footer />
       </div>
 
       <BottomNav activeTab={activeTab} onTabChange={handleTabChange} onDataChange={refresh} />

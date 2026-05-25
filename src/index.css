@@ -108,6 +108,24 @@
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(ellipse 80% 50% at 10% -10%, hsl(var(--primary) / 0.10), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 90% 0%, hsl(var(--primary) / 0.07), transparent 65%),
+      radial-gradient(circle at 50% 100%, hsl(var(--primary) / 0.06), transparent 60%),
+      radial-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+    background-size: auto, auto, auto, 22px 22px;
+    background-attachment: fixed;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+  }
+
+  .dark body {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 10% -10%, hsl(var(--primary) / 0.18), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 90% 0%, hsl(var(--primary) / 0.12), transparent 65%),
+      radial-gradient(circle at 50% 100%, hsl(var(--primary) / 0.10), transparent 60%),
+      radial-gradient(hsl(var(--foreground) / 0.05) 1px, transparent 1px);
+    background-size: auto, auto, auto, 22px 22px;
   }
 
   h1, h2, h3, h4, .font-display {
