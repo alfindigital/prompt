@@ -110,17 +110,17 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   };
 
   return (
-    <div className="group rounded-xl border bg-card p-3 sm:p-4 card-hover flex flex-col gap-2.5">
+    <div className="group bg-card border border-border p-5 sm:p-6 rounded-[28px] card-hover flex flex-col">
       {editing ? (
         <>
           <Input
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
             aria-label="Prompt title"
-            className="font-medium rounded-xl"
+            className="font-display font-bold text-lg rounded-xl mb-3"
             autoFocus
           />
-          <div className="rounded-xl border border-input bg-background p-2">
+          <div className="rounded-xl border border-input bg-background p-2 mb-3">
             <div className="flex items-center justify-between gap-2">
               <MarkdownToolbar textareaRef={editContentRef} value={editContent} onChange={setEditContent} />
               <Button
@@ -156,7 +156,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
               )}
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 mb-3">
             <Input
               value={editTags}
               onChange={(e) => setEditTags(e.target.value)}
@@ -188,66 +188,71 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
         </>
       ) : (
         <>
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              {category && (
-                <span
-                  className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full mb-1.5"
-                  style={{
-                    backgroundColor: `hsl(${category.color} / 0.12)`,
-                    color: `hsl(${category.color})`,
-                  }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: `hsl(${category.color})` }} />
-                  {category.name}
-                </span>
-              )}
-              <h3 className="font-display font-semibold text-sm leading-snug">{prompt.title}</h3>
-            </div>
-            <button onClick={handleFavorite} className="shrink-0 mt-0.5" aria-label="Toggle favorite">
+          <div className="flex justify-between items-start mb-4">
+            {category ? (
+              <span className="px-3 py-1 bg-secondary text-primary text-[10px] font-bold uppercase tracking-wider rounded-full">
+                {category.name}
+              </span>
+            ) : (
+              <span className="px-3 py-1 bg-secondary text-foreground/50 text-[10px] font-bold uppercase tracking-wider rounded-full">
+                Uncategorized
+              </span>
+            )}
+            <button onClick={handleFavorite} aria-label="Toggle favorite" className="shrink-0">
               <Star
-                className={`h-4 w-4 transition-colors ${
+                className={`h-5 w-5 transition-colors ${
                   prompt.is_favorite
                     ? "fill-primary text-primary"
-                    : "text-muted-foreground/40 hover:text-primary"
+                    : "text-foreground/15 hover:text-primary"
                 }`}
                 strokeWidth={1.75}
               />
             </button>
           </div>
 
-          <div className="prose-prompt text-sm line-clamp-4 overflow-hidden">
+          <h3 className="font-display text-lg sm:text-xl font-bold mb-2 leading-tight group-hover:text-primary transition-colors">
+            {prompt.title}
+          </h3>
+
+          <div className="prose-prompt text-sm line-clamp-3 mb-6 text-foreground/60 leading-relaxed flex-1">
             <ReactMarkdown>{prompt.content}</ReactMarkdown>
           </div>
 
-          {prompt.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {prompt.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/8 text-primary/70"
-                >
-                  {tag}
+          <div className="mt-auto pt-5 border-t border-border flex items-center justify-between gap-2">
+            <div className="flex gap-2 flex-wrap min-w-0">
+              {prompt.tags.length > 0 ? (
+                prompt.tags.slice(0, 3).map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[11px] font-bold text-foreground/40 uppercase tracking-wider"
+                  >
+                    #{tag}
+                  </span>
+                ))
+              ) : (
+                <span className="text-[11px] text-foreground/30">
+                  {prompt.last_used_at
+                    ? `Used ${new Date(prompt.last_used_at).toLocaleDateString()}`
+                    : new Date(prompt.created_at).toLocaleDateString()}
                 </span>
-              ))}
+              )}
             </div>
-          )}
-
-          <div className="flex items-center justify-between pt-2 border-t border-border/40">
-            <span className="text-[10px] text-muted-foreground/60">
-              {prompt.last_used_at
-                ? `Used ${new Date(prompt.last_used_at).toLocaleDateString()}`
-                : new Date(prompt.created_at).toLocaleDateString()}
-            </span>
-            <div className="flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-              <Button size="icon" variant="ghost" aria-label="Copy prompt" className="h-7 w-7 rounded-lg" onClick={handleCopy}>
-                <Copy className="h-3.5 w-3.5" />
-              </Button>
+            <div className="flex gap-1 shrink-0">
+              <button
+                onClick={handleCopy}
+                aria-label="Copy prompt"
+                className="p-2 bg-secondary/60 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all"
+              >
+                <Copy className="h-4 w-4" strokeWidth={1.75} />
+              </button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="ghost" aria-label="Share prompt" className="h-7 w-7 rounded-lg">
-                    <Share2 className="h-3.5 w-3.5" />
-                  </Button>
+                  <button
+                    aria-label="Share prompt"
+                    className="p-2 bg-secondary/60 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all"
+                  >
+                    <Share2 className="h-4 w-4" strokeWidth={1.75} />
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="rounded-xl">
                   <DropdownMenuItem onClick={handleCopyFormatted} className="gap-2 text-xs">
@@ -258,21 +263,26 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                     <Link className="h-3.5 w-3.5" />
                     Copy share link
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { duplicatePrompt(prompt.id); onUpdate(); toast.success("Prompt duplicated"); }} className="gap-2 text-xs">
+                    <Files className="h-3.5 w-3.5" />
+                    Duplicate
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button size="icon" variant="ghost" aria-label="Duplicate prompt" className="h-7 w-7 rounded-lg" onClick={() => {
-                duplicatePrompt(prompt.id);
-                onUpdate();
-                toast.success("Prompt duplicated");
-              }}>
-                <Files className="h-3.5 w-3.5" />
-              </Button>
-              <Button size="icon" variant="ghost" aria-label="Edit prompt" className="h-7 w-7 rounded-lg" onClick={() => setEditing(true)}>
-                <Pencil className="h-3.5 w-3.5" />
-              </Button>
-              <Button size="icon" variant="ghost" aria-label="Delete prompt" className="h-7 w-7 rounded-lg text-destructive hover:text-destructive" onClick={handleDelete}>
-                <Trash2 className="h-3.5 w-3.5" />
-              </Button>
+              <button
+                onClick={() => setEditing(true)}
+                aria-label="Edit prompt"
+                className="p-2 bg-secondary/60 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all"
+              >
+                <Pencil className="h-4 w-4" strokeWidth={1.75} />
+              </button>
+              <button
+                onClick={handleDelete}
+                aria-label="Delete prompt"
+                className="p-2 bg-secondary/60 text-destructive rounded-xl hover:bg-destructive hover:text-destructive-foreground transition-all"
+              >
+                <Trash2 className="h-4 w-4" strokeWidth={1.75} />
+              </button>
             </div>
           </div>
         </>

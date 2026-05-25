@@ -47,8 +47,8 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
   };
 
   const navItem = (active: boolean) =>
-    `flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-lg transition-colors ${
-      active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+    `flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-full transition-colors ${
+      active ? "text-primary" : "text-white/40 hover:text-white"
     }`;
 
   return (
@@ -56,11 +56,11 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
       {showSettings && (
         <div className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm animate-fade-in" onClick={() => setShowSettings(false)}>
           <div
-            className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm glass border rounded-2xl shadow-xl p-5 space-y-4 animate-scale-in"
+            className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm bg-card border border-border rounded-2xl shadow-xl p-5 space-y-4 animate-scale-in"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h3 className="font-display font-semibold text-sm">Settings</h3>
+              <h3 className="font-display font-bold text-base">Settings</h3>
               <button onClick={() => setShowSettings(false)} aria-label="Close settings" className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="h-4 w-4" strokeWidth={1.75} />
               </button>
@@ -80,42 +80,40 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
         </div>
       )}
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
-        <div className="max-w-lg mx-auto px-4 pb-3">
-          <div className="glass border border-primary/25 rounded-2xl shadow-lg shadow-primary/10 bg-primary/[0.06]">
-            <div className="flex items-center justify-around px-4 py-2">
-              <button
-                onClick={() => { onTabChange("prompts"); setShowSettings(false); }}
-                aria-label="View prompts"
-                className={navItem(activeTab === "prompts" && !showSettings)}
-              >
-                <List className="h-5 w-5" strokeWidth={1.75} />
-                <span className="text-[10px] font-medium">Prompts</span>
-              </button>
+      <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom px-4 pb-4 pointer-events-none">
+        <div className="max-w-sm mx-auto pointer-events-auto">
+          <div className="bg-ink rounded-full p-2 flex items-center justify-between shadow-2xl shadow-ink/40 border border-white/5">
+            <button
+              onClick={() => { onTabChange("prompts"); setShowSettings(false); }}
+              aria-label="View prompts"
+              className={navItem(activeTab === "prompts" && !showSettings)}
+            >
+              <List className="h-5 w-5" strokeWidth={1.75} />
+              <span className="text-[9px] font-bold uppercase tracking-[0.15em]">Prompts</span>
+            </button>
 
-              <button
-                onClick={() => { onTabChange("add"); setShowSettings(false); }}
-                aria-label="Add new prompt"
-                className="relative -mt-7"
-              >
-                <div className={`rounded-xl p-3.5 border transition-colors ${
-                  activeTab === "add" && !showSettings
-                    ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/30"
-                    : "bg-background text-primary border-primary/40 hover:bg-primary/10"
-                }`}>
-                  <Plus className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-              </button>
+            <button
+              onClick={() => { onTabChange("add"); setShowSettings(false); }}
+              aria-label="Add new prompt"
+              className="mx-2"
+            >
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ${
+                activeTab === "add" && !showSettings
+                  ? "bg-white text-ink shadow-lg shadow-white/20"
+                  : "bg-primary text-primary-foreground shadow-lg shadow-primary/40 hover:bg-primary/90"
+              }`}>
+                <Plus className="h-6 w-6" strokeWidth={2.25} />
+              </div>
+            </button>
 
-              <button
-                onClick={() => setShowSettings(!showSettings)}
-                aria-label="Open settings"
-                className={navItem(showSettings)}
-              >
-                <Settings className="h-5 w-5" strokeWidth={1.75} />
-                <span className="text-[10px] font-medium">Settings</span>
-              </button>
-            </div>
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              aria-label="Open settings"
+              className={navItem(showSettings)}
+            >
+              <Settings className="h-5 w-5" strokeWidth={1.75} />
+              <span className="text-[9px] font-bold uppercase tracking-[0.15em]">Settings</span>
+            </button>
           </div>
         </div>
       </nav>
