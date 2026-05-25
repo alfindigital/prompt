@@ -1,20 +1,21 @@
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { BrandMark } from "@/components/BrandMark";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 -mx-3 sm:-mx-5 mb-5 px-3 sm:px-5 border-b border-primary/20 bg-primary/[0.06] backdrop-blur-md supports-[backdrop-filter]:bg-primary/[0.05]">
-      <div className="flex items-center justify-between py-3 sm:py-4">
-        <div className="flex items-center gap-2.5">
-          <span className="brand-mark h-9 w-9">
-            <img src="/brand-mark.svg" alt="" aria-hidden="true" className="h-5 w-5" />
-          </span>
-          <div className="flex flex-col leading-tight">
-            <h1 className="font-display text-lg sm:text-xl font-semibold tracking-tight text-foreground">
+    <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center shadow-md shadow-primary/20 text-primary-foreground">
+            <BrandMark className="h-5 w-5" strokeWidth={2} />
+          </div>
+          <div className="leading-tight">
+            <h1 className="font-display text-lg font-bold tracking-tight text-foreground leading-none">
               Promptly
             </h1>
-            <span className="hidden sm:block text-[11px] font-medium text-primary/80 tracking-wide uppercase">
+            <p className="text-[10px] font-bold text-primary uppercase tracking-[0.18em] mt-1">
               AI Prompt Library
-            </span>
+            </p>
           </div>
         </div>
         <ThemeToggle />
