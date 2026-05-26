@@ -46,6 +46,8 @@ const Index = () => {
 
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkConfirm, setBulkConfirm] = useState(false);
+
 
   // Handle shared prompt from URL
   useEffect(() => {
