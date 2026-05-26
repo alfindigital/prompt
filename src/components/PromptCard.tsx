@@ -252,7 +252,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                 }`}
               >
                 {copied ? (
-                  <Check className="h-4 w-4 animate-scale-in" strokeWidth={2.25} />
+                  <Check className="h-4 w-4 animate-fade-in" strokeWidth={2.25} />
                 ) : (
                   <Copy className="h-4 w-4" strokeWidth={1.75} />
                 )}
