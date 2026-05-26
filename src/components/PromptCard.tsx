@@ -21,6 +21,9 @@ interface PromptCardProps {
 export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const confirmTimerRef = useRef<number | null>(null);
+
   const [editTitle, setEditTitle] = useState(prompt.title);
   const [editContent, setEditContent] = useState(prompt.content);
   const [editTags, setEditTags] = useState(prompt.tags.join(", "));
@@ -66,7 +69,15 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
     onUpdate();
   };
 
-  const handleDelete = () => {
+  const handleDeleteClick = () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      if (confirmTimerRef.current) window.clearTimeout(confirmTimerRef.current);
+      confirmTimerRef.current = window.setTimeout(() => setConfirmDelete(false), 3000);
+      return;
+    }
+    if (confirmTimerRef.current) window.clearTimeout(confirmTimerRef.current);
+    setConfirmDelete(false);
     const removed = deletePrompt(prompt.id);
     onUpdate();
     toast("Prompt deleted", {
@@ -84,6 +95,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
       },
     });
   };
+
 
   const handleSaveEdit = () => {
     if (!editTitle.trim() || !editContent.trim()) {
