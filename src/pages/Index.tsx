@@ -247,28 +247,33 @@ const Index = () => {
                 <Button size="sm" variant="ghost" className="h-7 text-xs rounded-lg" onClick={handleSelectAll}>
                   {selectedIds.size === filtered.length ? "Deselect all" : "Select all"}
                 </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button size="sm" variant="destructive" className="h-7 text-xs gap-1 rounded-lg">
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="h-7 text-xs gap-1 rounded-lg"
+                  onClick={() => {
+                    if (!bulkConfirm) {
+                      setBulkConfirm(true);
+                      window.setTimeout(() => setBulkConfirm(false), 3000);
+                      return;
+                    }
+                    setBulkConfirm(false);
+                    handleBulkDelete();
+                  }}
+                >
+                  {bulkConfirm ? (
+                    <>
+                      <Check className="h-3.5 w-3.5" strokeWidth={2.25} />
+                      Confirm delete
+                    </>
+                  ) : (
+                    <>
                       <Trash2 className="h-3.5 w-3.5" />
                       Delete
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="rounded-2xl">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Hapus {selectedIds.size} prompt?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Tindakan ini akan menghapus {selectedIds.size} prompt yang dipilih. Kamu bisa membatalkan lewat tombol Undo setelah dihapus.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="rounded-xl">Batal</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleBulkDelete} className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                        Hapus
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                    </>
+                  )}
+                </Button>
+
               </div>
             )}
 
