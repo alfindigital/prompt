@@ -28,23 +28,60 @@ export function BottomNav({ activeTab, onTabChange, onDataChange }: BottomNavPro
     toast.success(`Exported ${data.prompts.length} prompts & ${data.categories.length} categories`);
   };
 
+  const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (fileRef.current) fileRef.current.value = "";
     if (!file) return;
+
+    if (!/\.json$/i.test(file.name) && file.type && !file.type.includes("json")) {
+      toast.error("File must be a .json backup");
+      return;
+    }
+    if (file.size === 0) {
+      toast.error("Backup file is empty");
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      toast.error(`Backup too large (max ${MAX_BYTES / 1024 / 1024} MB)`);
+      return;
+    }
+
     const reader = new FileReader();
+    reader.onerror = () => toast.error("Could not read file");
     reader.onload = (ev) => {
+      const text = ev.target?.result;
+      if (typeof text !== "string") {
+        toast.error("Could not read file contents");
+        return;
+      }
+      let raw: unknown;
       try {
-        const raw = JSON.parse(ev.target?.result as string);
-        const count = importPrompts(raw);
+        raw = JSON.parse(text);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "unknown error";
+        toast.error("Invalid JSON", { description: msg });
+        return;
+      }
+      try {
+        const result = importPrompts(raw);
         onDataChange();
-        toast.success(`Imported ${count} prompts`);
-      } catch {
-        toast.error("Invalid JSON file");
+        const parts: string[] = [];
+        if (result.promptsAdded) parts.push(`${result.promptsAdded} added`);
+        if (result.promptsUpdated) parts.push(`${result.promptsUpdated} updated`);
+        if (result.categoriesAdded) parts.push(`${result.categoriesAdded} categories`);
+        toast.success("Backup restored", {
+          description: parts.length ? parts.join(" · ") : "No new prompts found",
+        });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Unknown validation error";
+        toast.error("Backup is not valid", { description: msg });
       }
     };
     reader.readAsText(file);
-    if (fileRef.current) fileRef.current.value = "";
   };
+
 
   const navItem = (active: boolean) =>
     `flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-full transition-colors ${

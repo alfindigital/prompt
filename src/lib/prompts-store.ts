@@ -1,4 +1,40 @@
+import { z } from "zod";
 import { Prompt, Category } from "./types";
+
+// --- Backup schema (lenient, normalizes shape) ---
+const PromptSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().trim().min(1, "title required").max(200),
+  content: z.string().min(1, "content required").max(50000),
+  tags: z.array(z.string().trim().min(1).max(50)).max(50).default([]),
+  category: z.string().nullable().optional().default(null),
+  is_favorite: z.boolean().optional().default(false),
+  created_at: z.string().min(1).optional().default(() => new Date().toISOString()),
+  last_used_at: z.string().nullable().optional().default(null),
+  sort_order: z.number().optional(),
+});
+
+const CategorySchema = z.object({
+  id: z.string().min(1),
+  name: z.string().trim().min(1).max(60),
+  color: z.string().min(1),
+});
+
+const BackupSchema = z.union([
+  z.array(PromptSchema),
+  z.object({
+    prompts: z.array(PromptSchema),
+    categories: z.array(CategorySchema).optional().default([]),
+  }),
+]);
+
+export type ImportResult = {
+  promptsAdded: number;
+  promptsUpdated: number;
+  categoriesAdded: number;
+  skipped: number;
+};
+
 
 const STORAGE_KEY = "prompt-library-prompts";
 const CATEGORIES_KEY = "prompt-library-categories";
@@ -111,39 +147,67 @@ export function deletePrompts(ids: string[]): Prompt[] {
   return removed;
 }
 
-export function importPrompts(data: Prompt[] | { prompts: Prompt[]; categories?: Category[] }): number {
-  const prompts = Array.isArray(data) ? data : data.prompts;
-  const cats = !Array.isArray(data) && data.categories ? data.categories : [];
+export function importPrompts(data: unknown): ImportResult {
+  const parsed = BackupSchema.safeParse(data);
+  if (!parsed.success) {
+    const first = parsed.error.issues[0];
+    const path = first.path.length ? first.path.join(".") : "root";
+    throw new Error(`Invalid backup at "${path}": ${first.message}`);
+  }
 
-  // Import categories
+  const value = parsed.data;
+  const promptsRaw = Array.isArray(value) ? value : value.prompts;
+  const cats = Array.isArray(value) ? [] : value.categories ?? [];
+
+  const result: ImportResult = {
+    promptsAdded: 0,
+    promptsUpdated: 0,
+    categoriesAdded: 0,
+    skipped: 0,
+  };
+
+  // Categories
   if (cats.length > 0) {
     const existing = readCategories();
     const existingIds = new Set(existing.map((c) => c.id));
     for (const c of cats) {
       if (!existingIds.has(c.id)) {
-        existing.push(c);
+        existing.push(c as Category);
+        result.categoriesAdded++;
       }
     }
     writeCategories(existing);
   }
 
-  // Import prompts
+  // Prompts
   const all = read();
-  const existingIds = new Set(all.map((p) => p.id));
-  let count = 0;
-  for (const p of prompts) {
-    const prompt = { ...p, category: p.category ?? null };
-    if (existingIds.has(prompt.id)) {
+  const byId = new Map(all.map((p) => [p.id, p] as const));
+  for (const p of promptsRaw) {
+    const prompt: Prompt = {
+      id: p.id,
+      title: p.title,
+      content: p.content,
+      tags: p.tags,
+      category: p.category ?? null,
+      is_favorite: p.is_favorite,
+      created_at: p.created_at,
+      last_used_at: p.last_used_at ?? null,
+      sort_order: p.sort_order,
+    };
+    if (byId.has(prompt.id)) {
       const idx = all.findIndex((x) => x.id === prompt.id);
       all[idx] = prompt;
+      result.promptsUpdated++;
     } else {
       all.push(prompt);
+      byId.set(prompt.id, prompt);
+      result.promptsAdded++;
     }
-    count++;
   }
   write(all);
-  return count;
+  return result;
 }
+
 
 export function exportPrompts(): { prompts: Prompt[]; categories: Category[] } {
   return { prompts: read(), categories: readCategories() };
