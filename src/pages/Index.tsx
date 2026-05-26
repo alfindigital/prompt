@@ -196,6 +196,8 @@ const Index = () => {
             {prompts.length > 0 && (
               <div className="space-y-3">
                 <SearchFilterBar
+                  search={search}
+                  onSearchChange={setSearch}
                   allTags={allTags}
                   selectedTags={selectedTags}
                   onTagToggle={(tag) => setSelectedTags((prev) =>
@@ -203,6 +205,7 @@ const Index = () => {
                   )}
                   onClearTags={() => setSelectedTags([])}
                 />
+
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <span className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
                     {filtered.length} prompt{filtered.length !== 1 ? "s" : ""}
