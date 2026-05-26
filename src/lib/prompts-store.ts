@@ -172,7 +172,7 @@ export function importPrompts(data: unknown): ImportResult {
     const existingIds = new Set(existing.map((c) => c.id));
     for (const c of cats) {
       if (!existingIds.has(c.id)) {
-        existing.push(c);
+        existing.push(c as Category);
         result.categoriesAdded++;
       }
     }
