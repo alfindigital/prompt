@@ -20,6 +20,7 @@ interface PromptCardProps {
 
 export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   const [editing, setEditing] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [editTitle, setEditTitle] = useState(prompt.title);
   const [editContent, setEditContent] = useState(prompt.content);
   const [editTags, setEditTags] = useState(prompt.tags.join(", "));
@@ -34,8 +35,11 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
     await navigator.clipboard.writeText(prompt.content);
     updatePrompt(prompt.id, { last_used_at: new Date().toISOString() });
     onUpdate();
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
     toast.success("Copied to clipboard");
   };
+
 
   const handleCopyFormatted = async () => {
     const lines = [`# ${prompt.title}`, ""];
@@ -240,11 +244,20 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             <div className="flex gap-1 shrink-0">
               <button
                 onClick={handleCopy}
-                aria-label="Copy prompt"
-                className="p-2 bg-secondary/60 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all"
+                aria-label={copied ? "Copied" : "Copy prompt"}
+                className={`p-2 rounded-xl transition-all ${
+                  copied
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary/60 text-primary hover:bg-primary hover:text-primary-foreground"
+                }`}
               >
-                <Copy className="h-4 w-4" strokeWidth={1.75} />
+                {copied ? (
+                  <Check className="h-4 w-4 animate-scale-in" strokeWidth={2.25} />
+                ) : (
+                  <Copy className="h-4 w-4" strokeWidth={1.75} />
+                )}
               </button>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
