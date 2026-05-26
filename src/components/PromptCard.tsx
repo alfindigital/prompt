@@ -302,12 +302,22 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                 <Pencil className="h-4 w-4" strokeWidth={1.75} />
               </button>
               <button
-                onClick={handleDelete}
-                aria-label="Delete prompt"
-                className="p-2 bg-secondary/60 text-destructive rounded-xl hover:bg-destructive hover:text-destructive-foreground transition-all"
+                onClick={handleDeleteClick}
+                aria-label={confirmDelete ? "Confirm delete" : "Delete prompt"}
+                title={confirmDelete ? "Click again to confirm" : "Delete prompt"}
+                className={`p-2 rounded-xl transition-all ${
+                  confirmDelete
+                    ? "bg-destructive text-destructive-foreground"
+                    : "bg-secondary/60 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                }`}
               >
-                <Trash2 className="h-4 w-4" strokeWidth={1.75} />
+                {confirmDelete ? (
+                  <Check className="h-4 w-4 animate-fade-in" strokeWidth={2.25} />
+                ) : (
+                  <Trash2 className="h-4 w-4" strokeWidth={1.75} />
+                )}
               </button>
+
             </div>
           </div>
         </>
