@@ -23,11 +23,8 @@ import { EmptyState } from "@/components/EmptyState";
 import { BottomNav } from "@/components/BottomNav";
 import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts, addPrompt } from "@/lib/prompts-store";
 import { Button } from "@/components/ui/button";
-import { Trash2, CheckSquare } from "lucide-react";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { Trash2, CheckSquare, Check } from "lucide-react";
+
 import { toast } from "sonner";
 
 type Tab = "prompts" | "add" | "settings";
