@@ -315,7 +315,7 @@ const Index = () => {
       </main>
 
       <Footer />
-      <BottomNav activeTab={activeTab} onTabChange={handleTabChange} onDataChange={refresh} />
+
     </div>
   );
 };
