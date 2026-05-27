@@ -13,14 +13,12 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Header } from "@/components/Header";
-import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
 import { CategoryBar } from "@/components/CategoryBar";
 import { SortablePromptCard } from "@/components/SortablePromptCard";
 import { EmptyState } from "@/components/EmptyState";
-import { BottomNav } from "@/components/BottomNav";
 import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts, addPrompt } from "@/lib/prompts-store";
 import { Button } from "@/components/ui/button";
 import { Trash2, CheckSquare, Check } from "lucide-react";
@@ -173,17 +171,21 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+      <Header
+        search={search}
+        onSearchChange={setSearch}
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        onDataChange={refresh}
+      />
 
-      {activeTab !== "add" && <Hero search={search} onSearchChange={setSearch} />}
-
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pb-8" aria-label="Prompt library">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-5 sm:pt-6 pb-8" aria-label="Prompt library">
         {activeTab === "add" ? (
-          <div key="add" className="animate-enter pt-8">
+          <div key="add" className="animate-enter">
             <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
           </div>
         ) : (
-          <div key="prompts" className="animate-enter -mt-6 sm:-mt-8 relative z-10 space-y-6">
+          <div key="prompts" className="animate-enter space-y-5">
             <h2 className="sr-only">Categories</h2>
             <CategoryBar
               categories={categories}
@@ -195,8 +197,6 @@ const Index = () => {
             {prompts.length > 0 && (
               <div className="space-y-3">
                 <SearchFilterBar
-                  search={search}
-                  onSearchChange={setSearch}
                   allTags={allTags}
                   selectedTags={selectedTags}
                   onTagToggle={(tag) => setSelectedTags((prev) =>
@@ -313,7 +313,7 @@ const Index = () => {
       </main>
 
       <Footer />
-      <BottomNav activeTab={activeTab} onTabChange={handleTabChange} onDataChange={refresh} />
+
     </div>
   );
 };

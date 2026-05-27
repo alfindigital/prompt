@@ -2,17 +2,13 @@ import { BrandMark } from "@/components/BrandMark";
 
 export function Footer() {
   return (
-    <footer className="max-w-7xl mx-auto px-4 sm:px-6 mt-16 mb-24 sm:mb-8">
-      <div className="border-t border-border pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-[13px] text-foreground/40 font-medium">
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center text-primary-foreground">
-            <BrandMark className="h-3.5 w-3.5" strokeWidth={2.25} />
-          </div>
-          <span className="font-display font-bold text-foreground">Promptly</span>
-          <span>© {new Date().getFullYear()} AI Prompt Library</span>
+    <footer className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 mb-6">
+      <div className="border-t border-border pt-4 flex flex-wrap justify-between items-center gap-2 text-xs text-foreground/40 font-medium">
+        <div className="flex items-center gap-2">
+          <BrandMark className="h-3 w-3 text-primary" strokeWidth={2.25} />
+          <span>Promptly · local-first · © {new Date().getFullYear()}</span>
         </div>
-        <div className="flex gap-6">
-          <a href="#" className="hover:text-primary transition-colors">Local-first</a>
+        <div className="flex gap-4">
           <a href="/llms.txt" className="hover:text-primary transition-colors">llms.txt</a>
           <a href="/sitemap.xml" className="hover:text-primary transition-colors">Sitemap</a>
         </div>
