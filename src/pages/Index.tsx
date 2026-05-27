@@ -197,8 +197,6 @@ const Index = () => {
             {prompts.length > 0 && (
               <div className="space-y-3">
                 <SearchFilterBar
-                  search={search}
-                  onSearchChange={setSearch}
                   allTags={allTags}
                   selectedTags={selectedTags}
                   onTagToggle={(tag) => setSelectedTags((prev) =>
