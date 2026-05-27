@@ -13,14 +13,12 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Header } from "@/components/Header";
-import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
 import { CategoryBar } from "@/components/CategoryBar";
 import { SortablePromptCard } from "@/components/SortablePromptCard";
 import { EmptyState } from "@/components/EmptyState";
-import { BottomNav } from "@/components/BottomNav";
 import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts, addPrompt } from "@/lib/prompts-store";
 import { Button } from "@/components/ui/button";
 import { Trash2, CheckSquare, Check } from "lucide-react";
