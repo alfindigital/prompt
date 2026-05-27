@@ -171,13 +171,17 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+      <Header
+        search={search}
+        onSearchChange={setSearch}
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        onDataChange={refresh}
+      />
 
-      {activeTab !== "add" && <Hero search={search} onSearchChange={setSearch} />}
-
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pb-8" aria-label="Prompt library">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-5 sm:pt-6 pb-8" aria-label="Prompt library">
         {activeTab === "add" ? (
-          <div key="add" className="animate-enter pt-8">
+          <div key="add" className="animate-enter">
             <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
           </div>
         ) : (
