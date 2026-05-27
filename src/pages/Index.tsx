@@ -185,7 +185,7 @@ const Index = () => {
             <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
           </div>
         ) : (
-          <div key="prompts" className="animate-enter -mt-6 sm:-mt-8 relative z-10 space-y-6">
+          <div key="prompts" className="animate-enter space-y-5">
             <h2 className="sr-only">Categories</h2>
             <CategoryBar
               categories={categories}
