@@ -83,17 +83,17 @@ export function Header({ search, onSearchChange, activeTab, onTabChange, onDataC
 
   return (
     <header className="sticky top-0 z-40 bg-background/85 backdrop-blur-md border-b border-border">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+      <div className="max-w-7xl mx-auto px-2.5 sm:px-6 py-1.5 sm:py-2.5 flex items-center gap-1.5 sm:gap-3 flex-nowrap">
         {/* Brand */}
         <button
           onClick={() => onTabChange("prompts")}
-          className="flex items-center gap-2 shrink-0 group"
+          className="flex items-center gap-1.5 sm:gap-2 shrink-0 group"
           aria-label="Promptly home"
         >
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground shadow-sm shadow-primary/25 group-hover:shadow-primary/40 transition-shadow">
-            <BrandMark className="h-4 w-4" strokeWidth={2} />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground shadow-sm shadow-primary/25 group-hover:shadow-primary/40 transition-shadow">
+            <BrandMark className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={2} />
           </div>
-          <span className="font-display text-base font-bold tracking-tight text-foreground hidden xs:inline sm:inline">
+          <span className="font-display text-sm sm:text-base font-bold tracking-tight text-foreground hidden md:inline">
             Promptly
           </span>
         </button>
