@@ -99,22 +99,22 @@ export function Header({ search, onSearchChange, activeTab, onTabChange, onDataC
         </button>
 
         {/* Search (grows) */}
-        <div className="relative flex-1 min-w-[140px] order-3 sm:order-2 basis-full sm:basis-auto">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
+        <div className="relative flex-1 min-w-0">
+          <Search className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
           <input
             type="search"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             aria-label="Search prompts"
-            placeholder="Search title, content, tag…"
-            className="w-full h-9 pl-9 pr-8 bg-secondary/60 border border-transparent hover:border-border rounded-full text-sm placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-background transition"
+            placeholder="Search…"
+            className="w-full h-8 sm:h-9 pl-8 sm:pl-9 pr-7 sm:pr-8 bg-secondary/60 border border-transparent hover:border-border rounded-full text-xs sm:text-sm placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-background transition"
           />
           {search && (
             <button
               type="button"
               onClick={() => onSearchChange("")}
               aria-label="Clear search"
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full text-foreground/50 hover:text-foreground hover:bg-secondary"
+              className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 p-1 rounded-full text-foreground/50 hover:text-foreground hover:bg-secondary"
             >
               <X className="h-3 w-3" strokeWidth={2} />
             </button>
@@ -122,12 +122,12 @@ export function Header({ search, onSearchChange, activeTab, onTabChange, onDataC
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 shrink-0 order-2 sm:order-3 ml-auto">
+        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <Button
             size="sm"
             onClick={() => onTabChange(activeTab === "add" ? "prompts" : "add")}
-            className="h-9 rounded-full gap-1.5 px-3 sm:px-4 text-xs font-semibold"
-            aria-label="Add new prompt"
+            className="h-8 sm:h-9 w-8 sm:w-auto p-0 sm:px-4 rounded-full sm:gap-1.5 text-xs font-semibold"
+            aria-label={activeTab === "add" ? "Close add prompt" : "Add new prompt"}
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={2.25} />
             <span className="hidden sm:inline">{activeTab === "add" ? "Close" : "New"}</span>
@@ -138,7 +138,7 @@ export function Header({ search, onSearchChange, activeTab, onTabChange, onDataC
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Open settings menu"
               aria-expanded={menuOpen}
-              className={`h-9 w-9 rounded-full flex items-center justify-center transition-colors ${
+              className={`h-8 w-8 sm:h-9 sm:w-9 rounded-full flex items-center justify-center transition-colors ${
                 menuOpen ? "bg-secondary text-foreground" : "text-foreground/60 hover:text-foreground hover:bg-secondary/70"
               }`}
             >
