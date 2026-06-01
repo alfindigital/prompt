@@ -171,7 +171,6 @@ export function Header({ search, onSearchChange, activeTab, onTabChange, onDataC
             )}
           </div>
 
-          <ThemeToggle />
         </div>
       </div>
     </header>
