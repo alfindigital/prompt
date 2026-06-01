@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Search, Plus, Settings, Download, Upload, X, Moon, Sun } from "lucide-react";
+import { Plus, Settings, Download, Upload, Moon, Sun } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
 import { exportPrompts, importPrompts } from "@/lib/prompts-store";
@@ -8,8 +8,6 @@ import { toast } from "sonner";
 type Tab = "prompts" | "add" | "settings";
 
 interface HeaderProps {
-  search: string;
-  onSearchChange: (val: string) => void;
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
   onDataChange: () => void;
@@ -17,7 +15,7 @@ interface HeaderProps {
 
 const MAX_BYTES = 5 * 1024 * 1024;
 
-export function Header({ search, onSearchChange, activeTab, onTabChange, onDataChange }: HeaderProps) {
+export function Header({ activeTab, onTabChange, onDataChange }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dark, setDark] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -101,28 +99,8 @@ export function Header({ search, onSearchChange, activeTab, onTabChange, onDataC
           </span>
         </button>
 
-        {/* Search (grows) */}
-        <div className="relative flex-1 min-w-0">
-          <Search className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            aria-label="Search prompts"
-            placeholder="Search…"
-            className="w-full h-8 sm:h-9 pl-8 sm:pl-9 pr-7 sm:pr-8 bg-secondary/60 border border-transparent hover:border-border rounded-full text-xs sm:text-sm placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-background transition"
-          />
-          {search && (
-            <button
-              type="button"
-              onClick={() => onSearchChange("")}
-              aria-label="Clear search"
-              className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 p-1 rounded-full text-foreground/50 hover:text-foreground hover:bg-secondary"
-            >
-              <X className="h-3 w-3" strokeWidth={2} />
-            </button>
-          )}
-        </div>
+        {/* Spacer */}
+        <div className="flex-1" />
 
         {/* Actions */}
         <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
