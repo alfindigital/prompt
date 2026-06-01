@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Category } from "@/lib/types";
 import { addCategory, deleteCategory, renameCategory } from "@/lib/prompts-store";
@@ -10,9 +10,10 @@ interface CategoryBarProps {
   selectedCategory: string | null;
   onSelectCategory: (id: string | null) => void;
   onDataChange: () => void;
+  leading?: ReactNode;
 }
 
-export function CategoryBar({ categories, selectedCategory, onSelectCategory, onDataChange }: CategoryBarProps) {
+export function CategoryBar({ categories, selectedCategory, onSelectCategory, onDataChange, leading }: CategoryBarProps) {
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -47,6 +48,7 @@ export function CategoryBar({ categories, selectedCategory, onSelectCategory, on
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
+      {leading}
       <button
         onClick={() => onSelectCategory(null)}
         className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${

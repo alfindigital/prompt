@@ -13,6 +13,7 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Header } from "@/components/Header";
+import { InlineSearch } from "@/components/InlineSearch";
 import { Footer } from "@/components/Footer";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
@@ -172,8 +173,6 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header
-        search={search}
-        onSearchChange={setSearch}
         activeTab={activeTab}
         onTabChange={handleTabChange}
         onDataChange={refresh}
@@ -192,7 +191,9 @@ const Index = () => {
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}
               onDataChange={refresh}
+              leading={<InlineSearch value={search} onChange={setSearch} />}
             />
+
 
             {prompts.length > 0 && (
               <div className="space-y-3">
