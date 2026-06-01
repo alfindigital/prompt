@@ -19,6 +19,10 @@ const MAX_BYTES = 5 * 1024 * 1024;
 
 export function Header({ search, onSearchChange, activeTab, onTabChange, onDataChange }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("theme") === "dark";
+  });
   const fileRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
