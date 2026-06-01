@@ -33,8 +33,8 @@ export function InstallPrompt() {
       <div className="flex items-center gap-3 rounded-xl border bg-card p-4 shadow-lg">
         <Download className="h-5 w-5 shrink-0 text-primary" />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium">Install Prompt Library</p>
-          <p className="text-xs text-muted-foreground">Akses cepat dari home screen</p>
+          <p className="text-sm font-medium">Install Promptly</p>
+          <p className="text-xs text-muted-foreground">Quick access from your home screen</p>
         </div>
         <Button size="sm" onClick={handleInstall}>Install</Button>
         <button onClick={() => setDismissed(true)} className="text-muted-foreground hover:text-foreground">
