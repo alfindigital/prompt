@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Search, Plus, Settings, Download, Upload, X } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Search, Plus, Settings, Download, Upload, X, Moon, Sun } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
 import { exportPrompts, importPrompts } from "@/lib/prompts-store";
@@ -20,6 +19,10 @@ const MAX_BYTES = 5 * 1024 * 1024;
 
 export function Header({ search, onSearchChange, activeTab, onTabChange, onDataChange }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("theme") === "dark";
+  });
   const fileRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -168,11 +171,27 @@ export function Header({ search, onSearchChange, activeTab, onTabChange, onDataC
                   className="hidden"
                   onChange={handleImport}
                 />
+                <div className="my-1 border-t border-border" />
+                <button
+                  onClick={() => {
+                    const next = !dark;
+                    setDark(next);
+                    document.documentElement.classList.toggle("dark", next);
+                    localStorage.setItem("theme", next ? "dark" : "light");
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors"
+                >
+                  {dark ? (
+                    <Sun className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                  ) : (
+                    <Moon className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                  )}
+                  {dark ? "Light mode" : "Dark mode"}
+                </button>
               </div>
             )}
           </div>
 
-          <ThemeToggle />
         </div>
       </div>
     </header>
