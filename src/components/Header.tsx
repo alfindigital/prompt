@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Search, Plus, Settings, Download, Upload, X } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Search, Plus, Settings, Download, Upload, X, Moon, Sun } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
 import { exportPrompts, importPrompts } from "@/lib/prompts-store";
