@@ -305,7 +305,19 @@ const Index = () => {
 
       <Footer />
 
+      <BottomBar
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        onDataChange={refresh}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        search={search}
+        onSearchChange={setSearch}
+      />
+
     </div>
+
   );
 };
 
