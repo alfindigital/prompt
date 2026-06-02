@@ -17,7 +17,7 @@ import { BottomBar } from "@/components/BottomBar";
 import { Footer } from "@/components/Footer";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
-import { CategoryBar } from "@/components/CategoryBar";
+
 import { SortablePromptCard } from "@/components/SortablePromptCard";
 import { EmptyState } from "@/components/EmptyState";
 import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts, addPrompt } from "@/lib/prompts-store";
