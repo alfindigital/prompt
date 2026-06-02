@@ -13,7 +13,7 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Header } from "@/components/Header";
-import { InlineSearch } from "@/components/InlineSearch";
+import { BottomBar } from "@/components/BottomBar";
 import { Footer } from "@/components/Footer";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
