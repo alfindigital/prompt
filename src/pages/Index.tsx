@@ -13,11 +13,11 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Header } from "@/components/Header";
-import { InlineSearch } from "@/components/InlineSearch";
+import { BottomBar } from "@/components/BottomBar";
 import { Footer } from "@/components/Footer";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
-import { CategoryBar } from "@/components/CategoryBar";
+
 import { SortablePromptCard } from "@/components/SortablePromptCard";
 import { EmptyState } from "@/components/EmptyState";
 import { getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts, addPrompt } from "@/lib/prompts-store";
@@ -172,11 +172,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        onDataChange={refresh}
-      />
+      <Header onBrandClick={() => handleTabChange("prompts")} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-5 sm:pt-6 pb-8" aria-label="Prompt library">
         {activeTab === "add" ? (
@@ -185,14 +181,8 @@ const Index = () => {
           </div>
         ) : (
           <div key="prompts" className="animate-enter space-y-5">
-            <h2 className="sr-only">Categories</h2>
-            <CategoryBar
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-              onDataChange={refresh}
-              leading={<InlineSearch value={search} onChange={setSearch} />}
-            />
+
+
 
 
             {prompts.length > 0 && (
@@ -315,7 +305,19 @@ const Index = () => {
 
       <Footer />
 
+      <BottomBar
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        onDataChange={refresh}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        search={search}
+        onSearchChange={setSearch}
+      />
+
     </div>
+
   );
 };
 
