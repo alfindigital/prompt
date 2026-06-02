@@ -172,11 +172,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        onDataChange={refresh}
-      />
+      <Header onBrandClick={() => handleTabChange("prompts")} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-5 sm:pt-6 pb-8" aria-label="Prompt library">
         {activeTab === "add" ? (
@@ -185,14 +181,8 @@ const Index = () => {
           </div>
         ) : (
           <div key="prompts" className="animate-enter space-y-5">
-            <h2 className="sr-only">Categories</h2>
-            <CategoryBar
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-              onDataChange={refresh}
-              leading={<InlineSearch value={search} onChange={setSearch} />}
-            />
+
+
 
 
             {prompts.length > 0 && (
