@@ -14,7 +14,6 @@ import {
 } from "@dnd-kit/sortable";
 import { Header } from "@/components/Header";
 import { BottomBar } from "@/components/BottomBar";
-import { Footer } from "@/components/Footer";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
 
