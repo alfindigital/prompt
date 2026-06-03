@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Plus, Settings, Download, Upload, Moon, Sun, Search, X, LayoutGrid, Check, Pencil, Trash2 } from "lucide-react";
+import { Plus, Settings, Download, Upload, Moon, Sun, Search, X, LayoutGrid, Check, Pencil, Trash2, Home } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Category } from "@/lib/types";
 import {
@@ -75,10 +75,6 @@ export function BottomBar({
   useEffect(() => {
     if (searchOpen) requestAnimationFrame(() => searchInputRef.current?.focus());
   }, [searchOpen]);
-
-  useEffect(() => {
-    if (search) setSearchOpen(true);
-  }, [search]);
 
   useEffect(() => {
     if (!searchOpen) return;
@@ -167,20 +163,31 @@ export function BottomBar({
     onDataChange();
   };
 
-  const iconBtn = "h-11 w-11 rounded-full flex items-center justify-center transition-colors text-foreground/70 hover:text-foreground hover:bg-secondary";
-  const iconBtnActive = "h-11 w-11 rounded-full flex items-center justify-center transition-colors bg-secondary text-foreground";
+  const isHome =
+    activeTab === "prompts" && !selectedCategory && !search;
+
+  const cellBase =
+    "flex flex-col items-center justify-center h-12 w-full rounded-2xl transition-colors";
+  const cellIdle = `${cellBase} text-foreground/60 hover:text-foreground hover:bg-secondary/70`;
+  const cellActive = `${cellBase} text-foreground bg-secondary`;
 
   return (
     <div
       className="sticky bottom-0 z-40 bg-background/90 backdrop-blur-md border-t border-border"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="max-w-md mx-auto px-3 py-2 flex items-center justify-between gap-1">
-        {/* Search */}
-        <div ref={searchWrapRef} className="relative">
-          {searchOpen ? (
-            <div className="relative flex items-center animate-scale-in origin-left">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
+      {/* Floating search bar above the nav */}
+      {searchOpen && (
+        <div
+          ref={searchWrapRef}
+          className="absolute left-0 right-0 bottom-full px-3 pb-2 animate-fade-in"
+        >
+          <div className="max-w-md mx-auto">
+            <div className="relative flex items-center bg-card border border-border rounded-full shadow-lg">
+              <Search
+                className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none"
+                strokeWidth={1.75}
+              />
               <input
                 ref={searchInputRef}
                 type="search"
@@ -192,223 +199,238 @@ export function BottomBar({
                     else setSearchOpen(false);
                   }
                 }}
-                onBlur={() => { if (!search) setSearchOpen(false); }}
                 aria-label="Search prompts"
-                placeholder="Search…"
-                className="h-11 w-48 sm:w-64 pl-9 pr-8 bg-secondary border-0 rounded-full text-sm placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-background transition"
+                placeholder="Search prompts…"
+                className="h-11 w-full pl-11 pr-10 bg-transparent border-0 rounded-full text-sm placeholder:text-foreground/40 focus:outline-none"
               />
-              {search && (
-                <button
-                  type="button"
-                  onClick={() => { onSearchChange(""); requestAnimationFrame(() => searchInputRef.current?.focus()); }}
-                  aria-label="Clear search"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full text-foreground/50 hover:text-foreground hover:bg-background"
-                >
-                  <X className="h-3 w-3" strokeWidth={2} />
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => {
+                  if (search) onSearchChange("");
+                  setSearchOpen(false);
+                }}
+                aria-label="Close search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-foreground/50 hover:text-foreground hover:bg-secondary"
+              >
+                <X className="h-4 w-4" strokeWidth={2} />
+              </button>
             </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              aria-label="Search prompts"
-              className={iconBtn}
-            >
-              <Search className="h-5 w-5" strokeWidth={1.75} />
-            </button>
-          )}
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-md mx-auto px-3 py-2 grid grid-cols-5 items-center gap-1">
+        {/* Home */}
+        <button
+          onClick={() => {
+            onSelectCategory(null);
+            onSearchChange("");
+            setSearchOpen(false);
+            onTabChange("prompts");
+          }}
+          aria-label="Home"
+          className={isHome ? cellActive : cellIdle}
+        >
+          <Home className="h-5 w-5" strokeWidth={1.75} />
+        </button>
+
+        {/* Search */}
+        <button
+          onClick={() => setSearchOpen((v) => !v)}
+          aria-label="Search prompts"
+          aria-expanded={searchOpen}
+          className={searchOpen || search ? cellActive : cellIdle}
+        >
+          <Search className="h-5 w-5" strokeWidth={1.75} />
+        </button>
+
+        {/* New (primary FAB, centered) */}
+        <div className="flex items-center justify-center">
+          <button
+            onClick={() => onTabChange(activeTab === "add" ? "prompts" : "add")}
+            aria-label={activeTab === "add" ? "Close add prompt" : "Add new prompt"}
+            className="h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg shadow-primary/30 hover:shadow-primary/50 active:scale-95 transition"
+          >
+            {activeTab === "add" ? (
+              <X className="h-5 w-5" strokeWidth={2.25} />
+            ) : (
+              <Plus className="h-5 w-5" strokeWidth={2.25} />
+            )}
+          </button>
         </div>
 
         {/* Categories */}
-        {!searchOpen && (
-          <div className="relative" ref={catsRef}>
-            <button
-              onClick={() => setCatsOpen((v) => !v)}
-              aria-label="Choose category"
-              aria-expanded={catsOpen}
-              className={`${catsOpen || selectedCategory ? iconBtnActive : iconBtn} relative`}
-            >
-              <LayoutGrid className="h-5 w-5" strokeWidth={1.75} />
-              {selectedCategory && (
-                <span
-                  className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full ring-2 ring-background"
-                  style={{ backgroundColor: `hsl(${categories.find((c) => c.id === selectedCategory)?.color ?? "0 0% 50%"})` }}
-                />
-              )}
-            </button>
-            {catsOpen && (
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 max-h-72 overflow-y-auto bg-card border border-border rounded-xl shadow-xl p-1.5 animate-scale-in origin-bottom z-50">
-                <button
-                  onClick={() => { onSelectCategory(null); setCatsOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                    selectedCategory === null ? "bg-secondary font-semibold" : "hover:bg-secondary"
-                  }`}
-                >
-                  <span className="w-2 h-2 rounded-full bg-foreground/40 shrink-0" />
-                  All Prompts
-                </button>
-                {categories.map((cat) => (
-                  <div key={cat.id} className="group/cat flex items-center">
-                    {editingId === cat.id ? (
-                      <div className="flex items-center gap-1 w-full px-2 py-1">
-                        <Input
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                          aria-label="Rename category"
-                          className="h-8 text-xs flex-1 rounded-lg"
-                          autoFocus
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleRenameCat(cat.id);
-                            if (e.key === "Escape") setEditingId(null);
-                          }}
+        <div ref={catsRef} className="relative">
+          <button
+            onClick={() => setCatsOpen((v) => !v)}
+            aria-label="Choose category"
+            aria-expanded={catsOpen}
+            className={`${catsOpen || selectedCategory ? cellActive : cellIdle} relative`}
+          >
+            <LayoutGrid className="h-5 w-5" strokeWidth={1.75} />
+            {selectedCategory && (
+              <span
+                className="absolute top-1.5 right-3 w-2 h-2 rounded-full ring-2 ring-background"
+                style={{ backgroundColor: `hsl(${categories.find((c) => c.id === selectedCategory)?.color ?? "0 0% 50%"})` }}
+              />
+            )}
+          </button>
+          {catsOpen && (
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 max-h-72 overflow-y-auto bg-card border border-border rounded-xl shadow-xl p-1.5 animate-scale-in origin-bottom z-50">
+              <button
+                onClick={() => { onSelectCategory(null); setCatsOpen(false); }}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                  selectedCategory === null ? "bg-secondary font-semibold" : "hover:bg-secondary"
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-foreground/40 shrink-0" />
+                All Prompts
+              </button>
+              {categories.map((cat) => (
+                <div key={cat.id} className="group/cat flex items-center">
+                  {editingId === cat.id ? (
+                    <div className="flex items-center gap-1 w-full px-2 py-1">
+                      <Input
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        aria-label="Rename category"
+                        className="h-8 text-xs flex-1 rounded-lg"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleRenameCat(cat.id);
+                          if (e.key === "Escape") setEditingId(null);
+                        }}
+                      />
+                      <button onClick={() => handleRenameCat(cat.id)} aria-label="Save" className="text-primary p-1">
+                        <Check className="h-3.5 w-3.5" strokeWidth={1.75} />
+                      </button>
+                      <button onClick={() => setEditingId(null)} aria-label="Cancel" className="text-muted-foreground p-1">
+                        <X className="h-3.5 w-3.5" strokeWidth={1.75} />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => { onSelectCategory(selectedCategory === cat.id ? null : cat.id); setCatsOpen(false); }}
+                        className={`flex-1 flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                          selectedCategory === cat.id ? "bg-secondary font-semibold" : "hover:bg-secondary"
+                        }`}
+                      >
+                        <span
+                          className="w-2 h-2 rounded-full shrink-0"
+                          style={{ backgroundColor: `hsl(${cat.color})` }}
                         />
-                        <button onClick={() => handleRenameCat(cat.id)} aria-label="Save" className="text-primary p-1">
-                          <Check className="h-3.5 w-3.5" strokeWidth={1.75} />
+                        <span className="truncate">{cat.name}</span>
+                      </button>
+                      <div className="hidden group-hover/cat:flex items-center gap-0.5 pr-1">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setEditingId(cat.id); setEditName(cat.name); }}
+                          aria-label="Rename"
+                          className="text-muted-foreground hover:text-foreground p-1"
+                        >
+                          <Pencil className="h-3 w-3" strokeWidth={1.75} />
                         </button>
-                        <button onClick={() => setEditingId(null)} aria-label="Cancel" className="text-muted-foreground p-1">
-                          <X className="h-3.5 w-3.5" strokeWidth={1.75} />
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDeleteCat(cat.id); }}
+                          aria-label="Delete"
+                          className="text-muted-foreground hover:text-destructive p-1"
+                        >
+                          <Trash2 className="h-3 w-3" strokeWidth={1.75} />
                         </button>
                       </div>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => { onSelectCategory(selectedCategory === cat.id ? null : cat.id); setCatsOpen(false); }}
-                          className={`flex-1 flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                            selectedCategory === cat.id ? "bg-secondary font-semibold" : "hover:bg-secondary"
-                          }`}
-                        >
-                          <span
-                            className="w-2 h-2 rounded-full shrink-0"
-                            style={{ backgroundColor: `hsl(${cat.color})` }}
-                          />
-                          <span className="truncate">{cat.name}</span>
-                        </button>
-                        <div className="hidden group-hover/cat:flex items-center gap-0.5 pr-1">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setEditingId(cat.id); setEditName(cat.name); }}
-                            aria-label="Rename"
-                            className="text-muted-foreground hover:text-foreground p-1"
-                          >
-                            <Pencil className="h-3 w-3" strokeWidth={1.75} />
-                          </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleDeleteCat(cat.id); }}
-                            aria-label="Delete"
-                            className="text-muted-foreground hover:text-destructive p-1"
-                          >
-                            <Trash2 className="h-3 w-3" strokeWidth={1.75} />
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                ))}
-                <div className="my-1 border-t border-border" />
-                {adding ? (
-                  <div className="flex items-center gap-1 px-2 py-1">
-                    <Input
-                      value={newName}
-                      onChange={(e) => setNewName(e.target.value)}
-                      placeholder="Category name…"
-                      aria-label="New category name"
-                      className="h-8 text-xs flex-1 rounded-lg"
-                      autoFocus
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleAddCat();
-                        if (e.key === "Escape") { setAdding(false); setNewName(""); }
-                      }}
-                    />
-                    <button onClick={handleAddCat} aria-label="Save" className="text-primary p-1">
-                      <Check className="h-3.5 w-3.5" strokeWidth={1.75} />
-                    </button>
-                    <button onClick={() => { setAdding(false); setNewName(""); }} aria-label="Cancel" className="text-muted-foreground p-1">
-                      <X className="h-3.5 w-3.5" strokeWidth={1.75} />
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setAdding(true)}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-primary hover:bg-secondary transition-colors"
-                  >
-                    <Plus className="h-4 w-4" strokeWidth={2} />
-                    New category
+                    </>
+                  )}
+                </div>
+              ))}
+              <div className="my-1 border-t border-border" />
+              {adding ? (
+                <div className="flex items-center gap-1 px-2 py-1">
+                  <Input
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Category name…"
+                    aria-label="New category name"
+                    className="h-8 text-xs flex-1 rounded-lg"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleAddCat();
+                      if (e.key === "Escape") { setAdding(false); setNewName(""); }
+                    }}
+                  />
+                  <button onClick={handleAddCat} aria-label="Save" className="text-primary p-1">
+                    <Check className="h-3.5 w-3.5" strokeWidth={1.75} />
                   </button>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* New (primary FAB) */}
-        <button
-          onClick={() => onTabChange(activeTab === "add" ? "prompts" : "add")}
-          aria-label={activeTab === "add" ? "Close add prompt" : "Add new prompt"}
-          className="h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg shadow-primary/30 hover:shadow-primary/50 active:scale-95 transition"
-        >
-          {activeTab === "add" ? (
-            <X className="h-5 w-5" strokeWidth={2.25} />
-          ) : (
-            <Plus className="h-5 w-5" strokeWidth={2.25} />
+                  <button onClick={() => { setAdding(false); setNewName(""); }} aria-label="Cancel" className="text-muted-foreground p-1">
+                    <X className="h-3.5 w-3.5" strokeWidth={1.75} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setAdding(true)}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-primary hover:bg-secondary transition-colors"
+                >
+                  <Plus className="h-4 w-4" strokeWidth={2} />
+                  New category
+                </button>
+              )}
+            </div>
           )}
-        </button>
+        </div>
 
         {/* Settings */}
-        {!searchOpen && (
-          <div className="relative" ref={menuRef}>
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-label="Open settings menu"
-              aria-expanded={menuOpen}
-              className={menuOpen ? iconBtnActive : iconBtn}
-            >
-              <Settings className="h-5 w-5" strokeWidth={1.75} />
-            </button>
-            {menuOpen && (
-              <div className="absolute right-0 bottom-full mb-2 w-56 bg-card border border-border rounded-xl shadow-xl p-1.5 animate-scale-in origin-bottom-right z-50">
-                <button
-                  onClick={handleExport}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors"
-                >
-                  <Download className="h-4 w-4 text-primary" strokeWidth={1.75} />
-                  Export prompts
-                </button>
-                <button
-                  onClick={() => fileRef.current?.click()}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors"
-                >
-                  <Upload className="h-4 w-4 text-primary" strokeWidth={1.75} />
-                  Import backup
-                </button>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept=".json"
-                  aria-label="Import prompts JSON file"
-                  className="hidden"
-                  onChange={handleImport}
-                />
-                <div className="my-1 border-t border-border" />
-                <button
-                  onClick={() => {
-                    const next = !dark;
-                    setDark(next);
-                    document.documentElement.classList.toggle("dark", next);
-                    localStorage.setItem("theme", next ? "dark" : "light");
-                  }}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors"
-                >
-                  {dark ? (
-                    <Sun className="h-4 w-4 text-primary" strokeWidth={1.75} />
-                  ) : (
-                    <Moon className="h-4 w-4 text-primary" strokeWidth={1.75} />
-                  )}
-                  {dark ? "Light mode" : "Dark mode"}
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+        <div ref={menuRef} className="relative">
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Open settings menu"
+            aria-expanded={menuOpen}
+            className={menuOpen ? cellActive : cellIdle}
+          >
+            <Settings className="h-5 w-5" strokeWidth={1.75} />
+          </button>
+          {menuOpen && (
+            <div className="absolute right-0 bottom-full mb-2 w-56 bg-card border border-border rounded-xl shadow-xl p-1.5 animate-scale-in origin-bottom-right z-50">
+              <button
+                onClick={handleExport}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors"
+              >
+                <Download className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                Export prompts
+              </button>
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors"
+              >
+                <Upload className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                Import backup
+              </button>
+              <input
+                ref={fileRef}
+                type="file"
+                accept=".json"
+                aria-label="Import prompts JSON file"
+                className="hidden"
+                onChange={handleImport}
+              />
+              <div className="my-1 border-t border-border" />
+              <button
+                onClick={() => {
+                  const next = !dark;
+                  setDark(next);
+                  document.documentElement.classList.toggle("dark", next);
+                  localStorage.setItem("theme", next ? "dark" : "light");
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors"
+              >
+                {dark ? (
+                  <Sun className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                ) : (
+                  <Moon className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                )}
+                {dark ? "Light mode" : "Dark mode"}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
