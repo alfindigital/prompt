@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical } from "lucide-react";
+import { GripHorizontal } from "lucide-react";
 import { PromptCard } from "./PromptCard";
 import { Prompt, Category } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
