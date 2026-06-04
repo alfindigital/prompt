@@ -45,10 +45,10 @@ export function SortablePromptCard({ prompt, onUpdate, categories, selectMode, s
         <button
           {...attributes}
           {...listeners}
-          className="absolute top-2 left-2 z-10 p-1.5 rounded-md opacity-60 sm:opacity-0 sm:group-hover/sortable:opacity-100 transition-opacity cursor-grab active:cursor-grabbing bg-muted/80 hover:bg-muted touch-none"
+          className="absolute top-1 left-1/2 -translate-x-1/2 z-10 px-2 py-1 rounded-full opacity-60 sm:opacity-0 sm:group-hover/sortable:opacity-100 transition-opacity cursor-grab active:cursor-grabbing bg-muted/80 hover:bg-muted touch-none"
           aria-label="Drag to reorder"
         >
-          <GripVertical className="h-4 w-4 text-muted-foreground" />
+          <GripHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
         </button>
       )}
       <div onClick={selectMode ? () => onToggleSelect?.(prompt.id) : undefined} className={selectMode ? "cursor-pointer" : ""}>
