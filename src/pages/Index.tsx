@@ -186,45 +186,44 @@ const Index = () => {
 
 
             {prompts.length > 0 && (
-              <div className="space-y-3">
-                <SearchFilterBar
-                  allTags={allTags}
-                  selectedTags={selectedTags}
-                  onTagToggle={(tag) => setSelectedTags((prev) =>
-                    prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-                  )}
-                  onClearTags={() => setSelectedTags([])}
-                />
-
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <span className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
+              <div className="rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm px-3 py-2.5 sm:px-4 sm:py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="flex-1 min-w-0 flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <SearchFilterBar
+                    allTags={allTags}
+                    selectedTags={selectedTags}
+                    onTagToggle={(tag) => setSelectedTags((prev) =>
+                      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+                    )}
+                    onClearTags={() => setSelectedTags([])}
+                  />
+                  <span className="text-[11px] font-semibold text-foreground/50 uppercase tracking-wider">
                     {filtered.length} prompt{filtered.length !== 1 ? "s" : ""}
                   </span>
-                  <div className="flex items-center gap-1.5">
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value as SortOption)}
-                      aria-label="Sort prompts"
-                      className="h-9 text-xs font-semibold rounded-full bg-secondary border-0 px-3 text-foreground focus:ring-2 focus:ring-primary/30"
-                    >
-                      <option value="default">Default</option>
-                      <option value="name">Name A-Z</option>
-                      <option value="date">Newest</option>
-                      <option value="used">Most Used</option>
-                    </select>
-                    <Button
-                      size="sm"
-                      variant={selectMode ? "secondary" : "ghost"}
-                      className="h-9 text-xs gap-1.5 rounded-full font-semibold"
-                      onClick={() => {
-                        setSelectMode(!selectMode);
-                        setSelectedIds(new Set());
-                      }}
-                    >
-                      <CheckSquare className="h-3.5 w-3.5" strokeWidth={1.75} />
-                      {selectMode ? "Cancel" : "Select"}
-                    </Button>
-                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    aria-label="Sort prompts"
+                    className="h-8 text-xs font-semibold rounded-full bg-secondary border-0 px-3 pr-7 text-foreground focus:ring-2 focus:ring-primary/30"
+                  >
+                    <option value="default">Default</option>
+                    <option value="name">Name A-Z</option>
+                    <option value="date">Newest</option>
+                    <option value="used">Most Used</option>
+                  </select>
+                  <Button
+                    size="sm"
+                    variant={selectMode ? "secondary" : "ghost"}
+                    className="h-8 text-xs gap-1.5 rounded-full font-semibold px-3"
+                    onClick={() => {
+                      setSelectMode(!selectMode);
+                      setSelectedIds(new Set());
+                    }}
+                  >
+                    <CheckSquare className="h-3.5 w-3.5" strokeWidth={1.75} />
+                    {selectMode ? "Cancel" : "Select"}
+                  </Button>
                 </div>
               </div>
             )}
