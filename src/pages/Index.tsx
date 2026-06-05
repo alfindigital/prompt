@@ -302,8 +302,6 @@ const Index = () => {
         )}
       </main>
 
-      <Footer />
-
       <BottomBar
         activeTab={activeTab}
         onTabChange={handleTabChange}
