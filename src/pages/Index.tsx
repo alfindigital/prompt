@@ -16,7 +16,7 @@ import { Header } from "@/components/Header";
 import { BottomBar } from "@/components/BottomBar";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
-import { Footer } from "@/components/Footer";
+
 
 import { SortablePromptCard } from "@/components/SortablePromptCard";
 import { EmptyState } from "@/components/EmptyState";
@@ -301,8 +301,6 @@ const Index = () => {
           </div>
         )}
       </main>
-
-      <Footer />
 
       <BottomBar
         activeTab={activeTab}
