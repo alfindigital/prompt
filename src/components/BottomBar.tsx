@@ -167,59 +167,57 @@ export function BottomBar({
     activeTab === "prompts" && !selectedCategory && !search;
 
   const cellBase =
-    "flex flex-col items-center justify-center h-12 w-full rounded-2xl transition-colors";
+    "flex items-center justify-center h-11 w-11 rounded-full transition-colors";
   const cellIdle = `${cellBase} text-foreground/60 hover:text-foreground hover:bg-secondary/70`;
   const cellActive = `${cellBase} text-foreground bg-secondary`;
 
   return (
     <div
-      className="sticky bottom-0 z-40 bg-background/90 backdrop-blur-md border-t border-border"
+      className="fixed left-1/2 -translate-x-1/2 z-40 bottom-4 sm:bottom-6"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      {/* Floating search bar above the nav */}
+      {/* Floating search bar above the dock */}
       {searchOpen && (
         <div
           ref={searchWrapRef}
-          className="absolute left-0 right-0 bottom-full px-3 pb-2 animate-fade-in"
+          className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-[min(92vw,28rem)] animate-fade-in"
         >
-          <div className="max-w-md mx-auto">
-            <div className="relative flex items-center bg-card border border-border rounded-full shadow-lg">
-              <Search
-                className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none"
-                strokeWidth={1.75}
-              />
-              <input
-                ref={searchInputRef}
-                type="search"
-                value={search}
-                onChange={(e) => onSearchChange(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") {
-                    if (search) onSearchChange("");
-                    else setSearchOpen(false);
-                  }
-                }}
-                aria-label="Search prompts"
-                placeholder="Search prompts…"
-                className="h-11 w-full pl-11 pr-10 bg-transparent border-0 rounded-full text-sm placeholder:text-foreground/40 focus:outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => {
+          <div className="relative flex items-center bg-card/95 backdrop-blur-xl border border-border rounded-full shadow-2xl shadow-foreground/10">
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none"
+              strokeWidth={1.75}
+            />
+            <input
+              ref={searchInputRef}
+              type="search"
+              value={search}
+              onChange={(e) => onSearchChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
                   if (search) onSearchChange("");
-                  setSearchOpen(false);
-                }}
-                aria-label="Close search"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-foreground/50 hover:text-foreground hover:bg-secondary"
-              >
-                <X className="h-4 w-4" strokeWidth={2} />
-              </button>
-            </div>
+                  else setSearchOpen(false);
+                }
+              }}
+              aria-label="Search prompts"
+              placeholder="Search prompts…"
+              className="h-11 w-full pl-11 pr-10 bg-transparent border-0 rounded-full text-sm placeholder:text-foreground/40 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (search) onSearchChange("");
+                setSearchOpen(false);
+              }}
+              aria-label="Close search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-foreground/50 hover:text-foreground hover:bg-secondary"
+            >
+              <X className="h-4 w-4" strokeWidth={2} />
+            </button>
           </div>
         </div>
       )}
 
-      <div className="max-w-md mx-auto px-3 py-2 grid grid-cols-5 items-center gap-1">
+      <div className="inline-flex items-center gap-1 px-2 py-2 rounded-full bg-card/85 backdrop-blur-xl border border-border/70 shadow-2xl shadow-foreground/15">
         {/* Home */}
         <button
           onClick={() => {
@@ -245,19 +243,18 @@ export function BottomBar({
         </button>
 
         {/* New (primary FAB, centered) */}
-        <div className="flex items-center justify-center">
-          <button
-            onClick={() => onTabChange(activeTab === "add" ? "prompts" : "add")}
-            aria-label={activeTab === "add" ? "Close add prompt" : "Add new prompt"}
-            className="h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg shadow-primary/30 hover:shadow-primary/50 active:scale-95 transition"
-          >
-            {activeTab === "add" ? (
-              <X className="h-5 w-5" strokeWidth={2.25} />
-            ) : (
-              <Plus className="h-5 w-5" strokeWidth={2.25} />
-            )}
-          </button>
-        </div>
+        <button
+          onClick={() => onTabChange(activeTab === "add" ? "prompts" : "add")}
+          aria-label={activeTab === "add" ? "Close add prompt" : "Add new prompt"}
+          className="h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg shadow-primary/40 hover:shadow-primary/50 active:scale-95 transition mx-0.5"
+        >
+          {activeTab === "add" ? (
+            <X className="h-5 w-5" strokeWidth={2.25} />
+          ) : (
+            <Plus className="h-5 w-5" strokeWidth={2.25} />
+          )}
+        </button>
+
 
         {/* Categories */}
         <div ref={catsRef} className="relative">
