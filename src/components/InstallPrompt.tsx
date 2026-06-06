@@ -29,7 +29,7 @@ export function InstallPrompt() {
   };
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 sm:left-auto sm:right-4 sm:max-w-sm">
+    <div className="fixed bottom-24 sm:bottom-28 left-4 right-4 z-50 sm:left-auto sm:right-4 sm:max-w-sm">
       <div className="flex items-center gap-3 rounded-xl border bg-card p-4 shadow-lg">
         <Download className="h-5 w-5 shrink-0 text-primary" />
         <div className="flex-1 min-w-0">
