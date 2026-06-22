@@ -1,6 +1,15 @@
 # Promptly
 
-> A personal AI prompt library — save, organize, search, and reuse your favorite prompts. Runs entirely in the browser with local storage.
+> A personal, local-first AI prompt library — save, organize, search, and reuse your favorite prompts. Runs entirely in the browser with local storage; no sign-up, no servers.
+
+## Features
+
+- Save prompts with tags and nested categories
+- Reusable {{variables}} you fill in before copying
+- Command palette (Ctrl/Cmd+K), full-text search, and filters
+- Version history and automatic local snapshots
+- Markdown editing/preview, open in ChatGPT or Claude, share via link
+- Import/export JSON backups; installable offline PWA
 
 ## Pages
 

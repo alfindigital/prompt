@@ -5,25 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="google-site-verification" content="f8c-Vx8VzWL_3E1ORcBaRZRkIqbirnpqMAYCSU6VER0" />
     <title>Promptly — AI Prompt Library</title>
-    <meta name="description" content="Promptly is a fast, local-first AI prompt library. Save, tag, categorize, search, and reuse your prompts — right in your browser.">
+    <meta name="description" content="Promptly is a fast, local-first AI prompt library. Save, tag, categorize, search, and reuse your prompts — right in your browser. No sign-up.">
     <meta name="author" content="Promptly" />
-    <meta name="theme-color" content="#7c5cff" />
+    <link rel="canonical" href="https://promlib.lovable.app/" />
+
+    <!-- Theme color tracks light/dark -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#7c5cff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d0a1a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Promptly" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+
+    <!-- Fonts: preconnect + reduced weights -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@600;700;800&family=Epilogue:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://promlib.lovable.app/" />
+    <meta property="og:site_name" content="Promptly" />
     <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a1df9767-2667-45b3-9127-b4ba3a0aa243/id-preview-2140fa22--357a02c3-7b31-4f88-9974-1f4183ced0d8.lovable.app-1774744551542.png">
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
     <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a1df9767-2667-45b3-9127-b4ba3a0aa243/id-preview-2140fa22--357a02c3-7b31-4f88-9974-1f4183ced0d8.lovable.app-1774744551542.png">
     <meta property="og:title" content="Promptly — AI Prompt Library">
-  <meta name="twitter:title" content="Promptly — AI Prompt Library">
-  <meta property="og:description" content="Save, tag, categorize, search, and reuse your favorite AI prompts. Local-first, fast, no sign-up.">
-  <meta name="twitter:description" content="Save, tag, categorize, search, and reuse your favorite AI prompts. Local-first, fast, no sign-up.">
+    <meta name="twitter:title" content="Promptly — AI Prompt Library">
+    <meta property="og:description" content="Save, tag, categorize, search, and reuse your favorite AI prompts. Local-first, fast, no sign-up.">
+    <meta name="twitter:description" content="Save, tag, categorize, search, and reuse your favorite AI prompts. Local-first, fast, no sign-up.">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -58,20 +71,61 @@
             "Save and organize AI prompts",
             "Tag and categorize prompts",
             "Full-text search and filters",
+            "Reusable {{variables}} with fill-in",
             "Favorites and duplication",
+            "Version history",
             "Import/export JSON",
             "Markdown preview",
+            "Command palette (Ctrl/Cmd+K)",
             "Share prompts via link",
-            "Installable PWA"
+            "Installable, offline-ready PWA"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://promlib.lovable.app/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is Promptly free?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Promptly is completely free with no sign-up. Your prompts are stored locally in your browser." }
+            },
+            {
+              "@type": "Question",
+              "name": "Where are my prompts stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Everything is saved in your browser's local storage. Nothing is sent to a server. Export a backup any time to move between devices." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I use variables in prompts?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Add {{placeholders}} to any prompt and Promptly will ask you to fill them in before copying." }
+            }
           ]
         }
       ]
     }
   </script>
+  <script>
+    // Apply saved/system theme before paint to avoid a flash and persist dark mode across reloads.
+    (function () {
+      try {
+        var stored = localStorage.getItem("theme");
+        var dark = stored === "dark" || (!stored && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        if (dark) document.documentElement.classList.add("dark");
+      } catch (e) {}
+    })();
+  </script>
 </head>
 
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="max-width:640px;margin:48px auto;padding:0 24px;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1330">
+        <h1>Promptly — AI Prompt Library</h1>
+        <p>Promptly is a free, local-first library for your AI prompts. Save, tag, categorize, search, and reuse your favorite prompts right in your browser — no sign-up, no servers.</p>
+        <p>Promptly needs JavaScript to run. Please enable JavaScript and reload this page.</p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

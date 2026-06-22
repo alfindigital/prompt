@@ -1,26 +1,49 @@
 {
+  "id": "/",
+  "lang": "en",
   "name": "Promptly — AI Prompt Library",
   "short_name": "Promptly",
   "description": "Local-first AI prompt library. Save, tag, search, and reuse your favorite prompts.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#7c5cff",
   "categories": ["productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "New prompt",
+      "short_name": "New",
+      "description": "Create a new prompt",
+      "url": "/?action=new"
+    },
+    {
+      "name": "Search prompts",
+      "short_name": "Search",
+      "description": "Search your prompt library",
+      "url": "/?action=search"
+    }
+  ],
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

@@ -1,13 +1,18 @@
 import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prompt, Category } from "@/lib/types";
-import { updatePrompt, deletePrompt, duplicatePrompt } from "@/lib/prompts-store";
+import { updatePrompt, deletePrompt } from "@/lib/prompts-store";
+import { usePromptActions } from "@/hooks/use-prompt-actions";
+import { hasVariables } from "@/lib/variables";
+import { estimateTokens } from "@/lib/share";
 import { MarkdownToolbar, useMarkdownShortcuts } from "@/components/MarkdownToolbar";
+import { FillVariablesDialog } from "@/components/FillVariablesDialog";
+import { PromptDetailDialog } from "@/components/PromptDetailDialog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Copy, Trash2, Pencil, Check, X, Files, Share2, Link, FileText, Eye, EyeOff } from "lucide-react";
+import { Star, Copy, Trash2, Pencil, Check, X, Files, Share2, Link, FileText, Eye, EyeOff, Sparkles, Maximize2 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -16,13 +21,18 @@ interface PromptCardProps {
   prompt: Prompt;
   onUpdate: () => void;
   categories: Category[];
+  startInEdit?: boolean;
 }
 
-export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
-  const [editing, setEditing] = useState(false);
-  const [copied, setCopied] = useState(false);
+export function PromptCard({ prompt, onUpdate, categories, startInEdit = false }: PromptCardProps) {
+  const [editing, setEditing] = useState(startInEdit);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [fillOpen, setFillOpen] = useState(false);
   const confirmTimerRef = useRef<number | null>(null);
+
+  const actions = usePromptActions(prompt, onUpdate);
+  const promptHasVars = hasVariables(prompt.content);
 
   const [editTitle, setEditTitle] = useState(prompt.title);
   const [editContent, setEditContent] = useState(prompt.content);
@@ -33,41 +43,6 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
   const editShortcuts = useMarkdownShortcuts(editContentRef, editContent, setEditContent);
 
   const category = categories.find((c) => c.id === prompt.category);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(prompt.content);
-    updatePrompt(prompt.id, { last_used_at: new Date().toISOString() });
-    onUpdate();
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
-    toast.success("Copied to clipboard");
-  };
-
-
-  const handleCopyFormatted = async () => {
-    const lines = [`# ${prompt.title}`, ""];
-    if (prompt.tags.length > 0) lines.push(`Tags: ${prompt.tags.join(", ")}`, "");
-    lines.push(prompt.content);
-    await navigator.clipboard.writeText(lines.join("\n"));
-    toast.success("Copied as formatted text");
-  };
-
-  const handleShareLink = async () => {
-    const payload = {
-      title: prompt.title,
-      content: prompt.content,
-      tags: prompt.tags,
-    };
-    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-    const url = `${window.location.origin}${window.location.pathname}?shared=${encoded}`;
-    await navigator.clipboard.writeText(url);
-    toast.success("Share link copied to clipboard");
-  };
-
-  const handleFavorite = () => {
-    updatePrompt(prompt.id, { is_favorite: !prompt.is_favorite });
-    onUpdate();
-  };
 
   const handleDeleteClick = () => {
     if (!confirmDelete) {
@@ -96,7 +71,6 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
     });
   };
 
-
   const handleSaveEdit = () => {
     if (!editTitle.trim() || !editContent.trim()) {
       toast.error("Title and content are required");
@@ -123,6 +97,11 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
     setEditTags(prompt.tags.join(", "));
     setEditCategory(prompt.category);
     setEditing(false);
+  };
+
+  const primaryCopy = () => {
+    if (promptHasVars) setFillOpen(true);
+    else actions.copy();
   };
 
   return (
@@ -166,10 +145,13 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                   {editContent.trim() ? (
                     <ReactMarkdown>{editContent}</ReactMarkdown>
                   ) : (
-                    <p className="text-muted-foreground/50 italic">Preview will appear here...</p>
+                    <p className="text-muted-foreground/60 italic">Preview will appear here...</p>
                   )}
                 </div>
               )}
+            </div>
+            <div className="flex justify-end pt-1 text-[10px] text-foreground/45">
+              {editContent.length.toLocaleString()} chars · ~{estimateTokens(editContent).toLocaleString()} tokens
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 mb-3">
@@ -183,6 +165,7 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             <select
               value={editCategory || ""}
               onChange={(e) => setEditCategory(e.target.value || null)}
+              aria-label="Category"
               className="text-sm rounded-xl border border-input bg-background px-3 py-2 text-foreground w-full sm:w-auto"
             >
               <option value="">No category</option>
@@ -210,29 +193,47 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                 {category.name}
               </span>
             ) : (
-              <span className="px-3 py-1 bg-secondary text-foreground/50 text-[10px] font-bold uppercase tracking-wider rounded-full">
+              <span className="px-3 py-1 bg-secondary text-foreground/55 text-[10px] font-bold uppercase tracking-wider rounded-full">
                 Uncategorized
               </span>
             )}
-            <button onClick={handleFavorite} aria-label="Toggle favorite" className="shrink-0">
-              <Star
-                className={`h-5 w-5 transition-colors ${
-                  prompt.is_favorite
-                    ? "fill-primary text-primary"
-                    : "text-foreground/15 hover:text-primary"
-                }`}
-                strokeWidth={1.75}
-              />
-            </button>
+            <div className="flex items-center gap-1.5">
+              {promptHasVars && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/10 rounded-full px-2 py-0.5" title="Has fill-in variables">
+                  <Sparkles className="h-3 w-3" /> vars
+                </span>
+              )}
+              <button onClick={actions.toggleFavorite} aria-label="Toggle favorite" className="shrink-0">
+                <Star
+                  className={`h-5 w-5 transition-colors ${
+                    prompt.is_favorite
+                      ? "fill-primary text-primary"
+                      : "text-foreground/20 hover:text-primary"
+                  }`}
+                  strokeWidth={1.75}
+                />
+              </button>
+            </div>
           </div>
 
-          <h3 className="font-display text-lg sm:text-xl font-bold mb-2 leading-tight group-hover:text-primary transition-colors">
-            {prompt.title}
-          </h3>
+          <button
+            onClick={() => setDetailOpen(true)}
+            className="text-left group/title"
+            aria-label={`Open “${prompt.title}”`}
+          >
+            <h3 className="font-display text-lg sm:text-xl font-bold mb-2 leading-tight group-hover/title:text-primary transition-colors inline-flex items-center gap-1.5">
+              {prompt.title}
+              <Maximize2 className="h-3.5 w-3.5 text-foreground/30 opacity-0 group-hover/title:opacity-100 transition-opacity" />
+            </h3>
+          </button>
 
-          <div className="prose-prompt text-sm line-clamp-3 mb-6 text-foreground/60 leading-relaxed flex-1">
+          <button
+            onClick={() => setDetailOpen(true)}
+            className="prose-prompt text-sm line-clamp-3 mb-6 text-foreground/65 leading-relaxed flex-1 text-left"
+            aria-label="Read full prompt"
+          >
             <ReactMarkdown>{prompt.content}</ReactMarkdown>
-          </div>
+          </button>
 
           <div className="mt-auto pt-5 border-t border-border flex items-center justify-between gap-2">
             <div className="flex gap-2 flex-wrap min-w-0">
@@ -240,13 +241,13 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                 prompt.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag}
-                    className="text-[11px] font-bold text-foreground/40 uppercase tracking-wider"
+                    className="text-[11px] font-bold text-foreground/45 uppercase tracking-wider"
                   >
                     #{tag}
                   </span>
                 ))
               ) : (
-                <span className="text-[11px] text-foreground/30">
+                <span className="text-[11px] text-foreground/40">
                   {prompt.last_used_at
                     ? `Used ${new Date(prompt.last_used_at).toLocaleDateString()}`
                     : new Date(prompt.created_at).toLocaleDateString()}
@@ -255,16 +256,19 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
             </div>
             <div className="flex gap-1 shrink-0">
               <button
-                onClick={handleCopy}
-                aria-label={copied ? "Copied" : "Copy prompt"}
+                onClick={primaryCopy}
+                aria-label={promptHasVars ? "Fill in variables and copy" : actions.copied ? "Copied" : "Copy prompt"}
+                title={promptHasVars ? "Fill in variables" : "Copy"}
                 className={`p-2 rounded-xl transition-all ${
-                  copied
+                  actions.copied
                     ? "bg-primary text-primary-foreground"
                     : "bg-secondary/60 text-primary hover:bg-primary hover:text-primary-foreground"
                 }`}
               >
-                {copied ? (
+                {actions.copied ? (
                   <Check className="h-4 w-4 animate-fade-in" strokeWidth={2.25} />
+                ) : promptHasVars ? (
+                  <Sparkles className="h-4 w-4" strokeWidth={1.75} />
                 ) : (
                   <Copy className="h-4 w-4" strokeWidth={1.75} />
                 )}
@@ -273,22 +277,36 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    aria-label="Share prompt"
+                    aria-label="More actions"
                     className="p-2 bg-secondary/60 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all"
                   >
                     <Share2 className="h-4 w-4" strokeWidth={1.75} />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="rounded-xl">
-                  <DropdownMenuItem onClick={handleCopyFormatted} className="gap-2 text-xs">
+                  {promptHasVars && (
+                    <DropdownMenuItem onClick={actions.copy} className="gap-2 text-xs">
+                      <Copy className="h-3.5 w-3.5" />
+                      Copy raw (with {"{{vars}}"})
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={() => actions.openIn("chatgpt")} className="gap-2 text-xs">
+                    <Share2 className="h-3.5 w-3.5" />
+                    Open in ChatGPT
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => actions.openIn("claude")} className="gap-2 text-xs">
+                    <Share2 className="h-3.5 w-3.5" />
+                    Open in Claude
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={actions.copyFormatted} className="gap-2 text-xs">
                     <FileText className="h-3.5 w-3.5" />
                     Copy as formatted text
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleShareLink} className="gap-2 text-xs">
+                  <DropdownMenuItem onClick={actions.shareLink} className="gap-2 text-xs">
                     <Link className="h-3.5 w-3.5" />
                     Copy share link
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { duplicatePrompt(prompt.id); onUpdate(); toast.success("Prompt duplicated"); }} className="gap-2 text-xs">
+                  <DropdownMenuItem onClick={actions.duplicate} className="gap-2 text-xs">
                     <Files className="h-3.5 w-3.5" />
                     Duplicate
                   </DropdownMenuItem>
@@ -317,9 +335,25 @@ export function PromptCard({ prompt, onUpdate, categories }: PromptCardProps) {
                   <Trash2 className="h-4 w-4" strokeWidth={1.75} />
                 )}
               </button>
-
             </div>
           </div>
+
+          <PromptDetailDialog
+            prompt={prompt}
+            categories={categories}
+            open={detailOpen}
+            onOpenChange={setDetailOpen}
+            onUpdate={onUpdate}
+            onRequestEdit={() => setEditing(true)}
+            onRequestFill={() => setFillOpen(true)}
+          />
+          <FillVariablesDialog
+            open={fillOpen}
+            onOpenChange={setFillOpen}
+            title={prompt.title}
+            content={prompt.content}
+            onCopied={actions.markCopiedExternally}
+          />
         </>
       )}
     </div>

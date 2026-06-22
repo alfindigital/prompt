@@ -7,6 +7,7 @@ interface HeaderProps {
 export function Header({ onBrandClick }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/60">
+      <h1 className="sr-only">Promptly — AI Prompt Library</h1>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
         <button
           onClick={onBrandClick}

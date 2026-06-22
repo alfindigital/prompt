@@ -13,11 +13,11 @@ export function SearchFilterBar({
 }: SearchFilterBarProps) {
   if (allTags.length === 0) return null;
   return (
-    <div className="flex flex-wrap gap-1.5 items-center">
+    <div className="flex flex-nowrap gap-1.5 items-center overflow-x-auto no-scrollbar max-w-full min-w-0 py-0.5">
       {selectedTags.length > 0 && (
         <button
           onClick={onClearTags}
-          className="text-[11px] font-semibold px-3 py-1 rounded-full border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
+          className="shrink-0 text-[11px] font-semibold px-3 py-1 rounded-full border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
         >
           Clear tags
         </button>
@@ -26,7 +26,7 @@ export function SearchFilterBar({
         <button
           key={tag}
           onClick={() => onTagToggle(tag)}
-          className={`text-xs font-semibold px-3 py-1 rounded-full transition-colors ${
+          className={`shrink-0 text-xs font-semibold px-3 py-1 rounded-full transition-colors ${
             selectedTags.includes(tag)
               ? "bg-primary text-primary-foreground"
               : "bg-secondary text-foreground/70 hover:bg-secondary/70 hover:text-foreground"
