@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { addPrompt, getCategories, getAllTags } from "@/lib/prompts-store";
 import { MarkdownToolbar, useMarkdownShortcuts } from "@/components/MarkdownToolbar";
+import { estimateTokens } from "@/lib/share";
+import { extractVariables } from "@/lib/variables";
 import { toast } from "sonner";
-import { Plus, X, Eye, EyeOff } from "lucide-react";
+import { Plus, X, Eye, EyeOff, Sparkles } from "lucide-react";
 
 interface QuickAddFormProps {
   onAdd: () => void;
@@ -131,10 +133,21 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
               {content.trim() ? (
                 <ReactMarkdown>{content}</ReactMarkdown>
               ) : (
-                <p className="text-muted-foreground/50 italic">Preview will appear here...</p>
+                <p className="text-muted-foreground/60 italic">Preview will appear here...</p>
               )}
             </div>
           )}
+        </div>
+        <div className="flex items-center justify-between pt-1 text-[10px] text-foreground/45">
+          {extractVariables(content).length > 0 ? (
+            <span className="inline-flex items-center gap-1 text-primary font-semibold">
+              <Sparkles className="h-3 w-3" />
+              {extractVariables(content).length} variable{extractVariables(content).length !== 1 ? "s" : ""}
+            </span>
+          ) : (
+            <span />
+          )}
+          <span>{content.length.toLocaleString()} chars · ~{estimateTokens(content).toLocaleString()} tokens</span>
         </div>
       </div>
 
