@@ -139,9 +139,9 @@ export function BottomBar({
       className="fixed left-1/2 -translate-x-1/2 z-40 bottom-4 sm:bottom-6"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      {/* Floating search bar above the dock */}
+      {/* Floating search bar above the dock — centered to viewport */}
       {searchOpen && (
-        <div ref={searchWrapRef} className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-[min(92vw,28rem)] animate-fade-in">
+        <div ref={searchWrapRef} className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] w-[min(92vw,28rem)] z-50 animate-fade-in">
           <div className="relative flex items-center bg-card/95 backdrop-blur-xl border border-border rounded-full shadow-2xl shadow-foreground/10">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
             <input
