@@ -304,13 +304,8 @@ export function BottomBar({
             <Settings className="h-5 w-5" strokeWidth={1.75} />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 bottom-full mb-3 w-60 bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom-right z-50">
-              <button onClick={() => { setMenuOpen(false); onOpenPalette(); }} className={menuItem}>
-                <Command className="h-4 w-4 text-primary" strokeWidth={1.75} />
-                <span className="flex-1 text-left">Command palette</span>
-                <kbd className="text-[10px] font-semibold text-foreground/50">⌘K</kbd>
-              </button>
-              <div className="my-1 border-t border-border" />
+            <div className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] w-[min(92vw,16rem)] bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom z-50">
+
               <button onClick={() => { setMenuOpen(false); onExport(); }} className={menuItem}>
                 <Download className="h-4 w-4 text-primary" strokeWidth={1.75} /> Export backup
               </button>
