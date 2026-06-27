@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Plus, Settings, Download, Upload, Moon, Sun, Search, X, LayoutGrid, Check, Pencil,
-  Trash2, Home, Command, Tags, FileText, History,
+  Trash2, Home, Tags, FileText, History,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Category } from "@/lib/types";
