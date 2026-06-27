@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Plus, Settings, Download, Upload, Moon, Sun, Search, X, LayoutGrid, Check, Pencil,
-  Trash2, Home, Command, Tags, FileText, History,
+  Trash2, Home, Tags, FileText, History,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Category } from "@/lib/types";
@@ -139,9 +139,9 @@ export function BottomBar({
       className="fixed left-1/2 -translate-x-1/2 z-40 bottom-4 sm:bottom-6"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      {/* Floating search bar above the dock */}
+      {/* Floating search bar above the dock — centered to viewport */}
       {searchOpen && (
-        <div ref={searchWrapRef} className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-[min(92vw,28rem)] animate-fade-in">
+        <div ref={searchWrapRef} className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] w-[min(92vw,28rem)] z-50 animate-fade-in">
           <div className="relative flex items-center bg-card/95 backdrop-blur-xl border border-border rounded-full shadow-2xl shadow-foreground/10">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
             <input
@@ -217,7 +217,7 @@ export function BottomBar({
             )}
           </button>
           {catsOpen && (
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-64 max-h-72 overflow-y-auto bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom z-50">
+            <div className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] w-[min(92vw,18rem)] max-h-72 overflow-y-auto bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom z-50">
               <button
                 onClick={() => { onSelectCategory(null); setCatsOpen(false); }}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${selectedCategory === null ? "bg-secondary font-semibold" : "hover:bg-secondary"}`}
@@ -304,13 +304,8 @@ export function BottomBar({
             <Settings className="h-5 w-5" strokeWidth={1.75} />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 bottom-full mb-3 w-60 bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom-right z-50">
-              <button onClick={() => { setMenuOpen(false); onOpenPalette(); }} className={menuItem}>
-                <Command className="h-4 w-4 text-primary" strokeWidth={1.75} />
-                <span className="flex-1 text-left">Command palette</span>
-                <kbd className="text-[10px] font-semibold text-foreground/50">⌘K</kbd>
-              </button>
-              <div className="my-1 border-t border-border" />
+            <div className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] w-[min(92vw,16rem)] bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom z-50">
+
               <button onClick={() => { setMenuOpen(false); onExport(); }} className={menuItem}>
                 <Download className="h-4 w-4 text-primary" strokeWidth={1.75} /> Export backup
               </button>
