@@ -217,7 +217,7 @@ export function BottomBar({
             )}
           </button>
           {catsOpen && (
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-64 max-h-72 overflow-y-auto bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom z-50">
+            <div className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] w-[min(92vw,18rem)] max-h-72 overflow-y-auto bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom z-50">
               <button
                 onClick={() => { onSelectCategory(null); setCatsOpen(false); }}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${selectedCategory === null ? "bg-secondary font-semibold" : "hover:bg-secondary"}`}
