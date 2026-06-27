@@ -39,7 +39,7 @@ import { hasVariables } from "@/lib/variables";
 import { isDark, toggleTheme as toggleThemeFn } from "@/lib/theme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, CheckSquare, Check, Search, Star, X } from "lucide-react";
+import { Trash2, CheckSquare, Check, Search, Star, X, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import type { Prompt } from "@/lib/types";
 
@@ -373,57 +373,65 @@ const Index = () => {
 
             {prompts.length > 0 && (
               <div className="rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm px-3 py-2.5 sm:px-4 sm:py-3 space-y-3">
-                {/* Visible search — discoverable, syncs with the dock + ?q= */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
-                  <Input
-                    ref={topSearchRef}
-                    type="search"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search prompts…"
-                    aria-label="Search prompts"
-                    className="h-9 pl-9 rounded-xl text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <div className="flex-1 min-w-0 flex flex-wrap items-center gap-x-3 gap-y-2">
-                    <SearchFilterBar
-                      allTags={allTags}
-                      selectedTags={selectedTags}
-                      onTagToggle={(tag) => setSelectedTags((prev) =>
-                        prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-                      )}
-                      onClearTags={() => setSelectedTags([])}
+                {/* Search + compact icon controls */}
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1 min-w-0">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
+                    <Input
+                      ref={topSearchRef}
+                      type="search"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Search prompts…"
+                      aria-label="Search prompts"
+                      className="h-9 pl-9 rounded-xl text-sm"
                     />
-                    <span className="text-[11px] font-semibold text-foreground/55 uppercase tracking-wider shrink-0">
-                      {filtered.length} prompt{filtered.length !== 1 ? "s" : ""}
-                    </span>
                   </div>
-                  <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value as SortOption)}
+                  <div className="flex items-center gap-1 shrink-0">
+                    <label
+                      className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors cursor-pointer focus-within:ring-2 focus-within:ring-primary/30"
                       aria-label="Sort prompts"
-                      className="h-8 text-xs font-semibold rounded-full bg-secondary border-0 px-3 pr-7 text-foreground focus:ring-2 focus:ring-primary/30"
+                      title="Sort prompts"
                     >
-                      <option value="default">Manual order</option>
-                      <option value="name">Name A-Z</option>
-                      <option value="date">Newest</option>
-                      <option value="recent">Recently used</option>
-                      <option value="used">Most used</option>
-                    </select>
+                      <ArrowUpDown className="h-4 w-4" strokeWidth={1.75} />
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as SortOption)}
+                        aria-label="Sort prompts"
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      >
+                        <option value="default">Manual order</option>
+                        <option value="name">Name A-Z</option>
+                        <option value="date">Newest</option>
+                        <option value="recent">Recently used</option>
+                        <option value="used">Most used</option>
+                      </select>
+                    </label>
                     <Button
-                      size="sm"
+                      size="icon"
                       variant={selectMode ? "secondary" : "ghost"}
-                      className="h-8 text-xs gap-1.5 rounded-full font-semibold px-3"
+                      className="h-9 w-9 rounded-xl"
+                      aria-label={selectMode ? "Cancel selection" : "Select prompts"}
+                      title={selectMode ? "Cancel selection" : "Select prompts"}
                       onClick={() => { setSelectMode(!selectMode); setSelectedIds(new Set()); }}
                     >
-                      <CheckSquare className="h-3.5 w-3.5" strokeWidth={1.75} />
-                      {selectMode ? "Cancel" : "Select"}
+                      <CheckSquare className="h-4 w-4" strokeWidth={1.75} />
                     </Button>
                   </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <SearchFilterBar
+                    allTags={allTags}
+                    selectedTags={selectedTags}
+                    onTagToggle={(tag) => setSelectedTags((prev) =>
+                      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+                    )}
+                    onClearTags={() => setSelectedTags([])}
+                  />
+                  <span className="text-[11px] font-semibold text-foreground/55 uppercase tracking-wider shrink-0">
+                    {filtered.length} prompt{filtered.length !== 1 ? "s" : ""}
+                  </span>
                 </div>
               </div>
             )}
