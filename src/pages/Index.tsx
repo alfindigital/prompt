@@ -39,7 +39,7 @@ import { hasVariables } from "@/lib/variables";
 import { isDark, toggleTheme as toggleThemeFn } from "@/lib/theme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, CheckSquare, Check, Search, Star, X } from "lucide-react";
+import { Trash2, CheckSquare, Check, Search, Star, X, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import type { Prompt } from "@/lib/types";
 
