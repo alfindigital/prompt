@@ -26,7 +26,7 @@ import { SharedPromptDialog } from "@/components/SharedPromptDialog";
 import { TagManager } from "@/components/TagManager";
 import { ImportTextDialog } from "@/components/ImportTextDialog";
 import { SnapshotsDialog } from "@/components/SnapshotsDialog";
-import { DataSafetyBanner } from "@/components/DataSafetyBanner";
+
 import {
   getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts, addPrompt,
   markUsed, bulkSetCategory, bulkAddTags, bulkSetFavorite, restorePrompts,
