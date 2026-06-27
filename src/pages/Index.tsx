@@ -369,7 +369,8 @@ const Index = () => {
           </div>
         ) : (
           <div key="prompts" className="animate-enter space-y-5">
-            <DataSafetyBanner promptCount={prompts.length} onExport={handleExport} version={version} />
+
+
 
             {prompts.length > 0 && (
               <div className="rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm px-3 py-2.5 sm:px-4 sm:py-3 space-y-3">
