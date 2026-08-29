@@ -1,16 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Plus, Settings, Download, Upload, Moon, Sun, Search, X, LayoutGrid, Check, Pencil,
-  Trash2, Home, Tags, FileText, History,
+  Trash2, Home, Tags, FileText, ArrowUpDown, CheckSquare,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Category } from "@/lib/types";
 import { addCategory, deleteCategory, renameCategory, getCategoryTree } from "@/lib/prompts-store";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 type Tab = "prompts" | "add" | "settings";
+type SortOption = "default" | "name" | "date" | "recent" | "used";
 
 interface BottomBarProps {
+  className?: string;
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
   onDataChange: () => void;
@@ -25,11 +28,16 @@ interface BottomBarProps {
   onImport: () => void;
   onImportText: () => void;
   onManageTags: () => void;
-  onRestoreSnapshots: () => void;
-  onOpenPalette: () => void;
+  
+  onOpenPalette?: () => void;
+  sortBy?: SortOption;
+  onSortChange?: (v: SortOption) => void;
+  selectMode?: boolean;
+  onToggleSelect?: () => void;
 }
 
 export function BottomBar({
+  className,
   activeTab,
   onTabChange,
   onDataChange,
@@ -44,8 +52,12 @@ export function BottomBar({
   onImport,
   onImportText,
   onManageTags,
-  onRestoreSnapshots,
+  
   onOpenPalette,
+  sortBy = "default",
+  onSortChange,
+  selectMode = false,
+  onToggleSelect,
 }: BottomBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -136,12 +148,14 @@ export function BottomBar({
 
   return (
     <div
-      className="fixed left-1/2 -translate-x-1/2 z-40 bottom-4 sm:bottom-6"
+      className={cn("fixed inset-x-0 z-40 bottom-4 sm:bottom-6 flex justify-center pointer-events-none", className)}
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
+     <div className="relative pointer-events-auto">
       {/* Floating search bar above the dock — centered to viewport */}
       {searchOpen && (
-        <div ref={searchWrapRef} className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] w-[min(92vw,28rem)] z-50 animate-fade-in">
+        <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-50 flex justify-center pointer-events-none px-4">
+        <div ref={searchWrapRef} className="w-full max-w-md pointer-events-auto animate-fade-in">
           <div className="relative flex items-center bg-card/95 backdrop-blur-xl border border-border rounded-full shadow-2xl shadow-foreground/10">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
             <input
@@ -156,7 +170,7 @@ export function BottomBar({
                 }
               }}
               aria-label="Search prompts"
-              placeholder="Search prompts…"
+              placeholder="Search…"
               className="h-11 w-full pl-11 pr-10 bg-transparent border-0 rounded-full text-sm placeholder:text-foreground/45 focus:outline-none"
             />
             <button
@@ -168,6 +182,7 @@ export function BottomBar({
               <X className="h-4 w-4" strokeWidth={2} />
             </button>
           </div>
+        </div>
         </div>
       )}
 
@@ -217,7 +232,8 @@ export function BottomBar({
             )}
           </button>
           {catsOpen && (
-            <div className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] w-[min(92vw,18rem)] max-h-72 overflow-y-auto bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom z-50">
+            <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-50 flex justify-center pointer-events-none px-4">
+            <div className="w-full max-w-xs max-h-72 overflow-y-auto bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom pointer-events-auto">
               <button
                 onClick={() => { onSelectCategory(null); setCatsOpen(false); }}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${selectedCategory === null ? "bg-secondary font-semibold" : "hover:bg-secondary"}`}
@@ -290,6 +306,7 @@ export function BottomBar({
                 </button>
               )}
             </div>
+            </div>
           )}
         </div>
 
@@ -304,7 +321,8 @@ export function BottomBar({
             <Settings className="h-5 w-5" strokeWidth={1.75} />
           </button>
           {menuOpen && (
-            <div className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] w-[min(92vw,16rem)] bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom z-50">
+            <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-50 flex justify-center pointer-events-none px-4">
+            <div className="w-full max-w-xs bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-2xl shadow-foreground/10 p-1.5 animate-scale-in origin-bottom pointer-events-auto">
 
               <button onClick={() => { setMenuOpen(false); onExport(); }} className={menuItem}>
                 <Download className="h-4 w-4 text-primary" strokeWidth={1.75} /> Export backup
@@ -315,9 +333,33 @@ export function BottomBar({
               <button onClick={() => { setMenuOpen(false); onImportText(); }} className={menuItem}>
                 <FileText className="h-4 w-4 text-primary" strokeWidth={1.75} /> Import from text
               </button>
-              <button onClick={() => { setMenuOpen(false); onRestoreSnapshots(); }} className={menuItem}>
-                <History className="h-4 w-4 text-primary" strokeWidth={1.75} /> Local snapshots
-              </button>
+              <div className="my-1 border-t border-border" />
+              {onSortChange && (
+                <label className={`${menuItem} cursor-pointer relative`}>
+                  <ArrowUpDown className="h-4 w-4 text-primary" strokeWidth={1.75} /> Sort by
+                  <select
+                    value={sortBy}
+                    onChange={(e) => { setMenuOpen(false); onSortChange(e.target.value as SortOption); }}
+                    aria-label="Sort prompts"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  >
+                    <option value="default">Manual order</option>
+                    <option value="name">Name A-Z</option>
+                    <option value="date">Newest</option>
+                    <option value="recent">Recently used</option>
+                    <option value="used">Most used</option>
+                  </select>
+                </label>
+              )}
+              {onToggleSelect && (
+                <button
+                  onClick={() => { setMenuOpen(false); onToggleSelect(); }}
+                  className={menuItem}
+                >
+                  <CheckSquare className={`h-4 w-4 ${selectMode ? "text-primary" : "text-primary"}`} strokeWidth={1.75} />
+                  {selectMode ? "Cancel selection" : "Select prompts"}
+                </button>
+              )}
               <div className="my-1 border-t border-border" />
               <button onClick={() => { setMenuOpen(false); onManageTags(); }} className={menuItem}>
                 <Tags className="h-4 w-4 text-primary" strokeWidth={1.75} /> Manage tags
@@ -327,8 +369,10 @@ export function BottomBar({
                 {themeDark ? "Light mode" : "Dark mode"}
               </button>
             </div>
+            </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

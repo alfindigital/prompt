@@ -105,7 +105,8 @@ export function PromptCard({ prompt, onUpdate, categories, startInEdit = false }
   };
 
   return (
-    <div className="group bg-card border border-border p-5 sm:p-6 rounded-[28px] card-hover flex flex-col">
+    <div className="group card-paper p-5 sm:p-6 flex flex-col">
+
       {editing ? (
         <>
           <Input
@@ -189,26 +190,27 @@ export function PromptCard({ prompt, onUpdate, categories, startInEdit = false }
         <>
           <div className="flex justify-between items-start mb-4">
             {category ? (
-              <span className="px-3 py-1 bg-secondary text-primary text-[10px] font-bold uppercase tracking-wider rounded-full">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-secondary text-foreground/75 text-[10px] font-semibold uppercase tracking-[0.14em] rounded-md">
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: `hsl(${category.color})` }} />
                 {category.name}
               </span>
             ) : (
-              <span className="px-3 py-1 bg-secondary text-foreground/55 text-[10px] font-bold uppercase tracking-wider rounded-full">
+              <span className="px-2.5 py-1 bg-secondary text-foreground/45 text-[10px] font-semibold uppercase tracking-[0.14em] rounded-md">
                 Uncategorized
               </span>
             )}
             <div className="flex items-center gap-1.5">
               {promptHasVars && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/10 rounded-full px-2 py-0.5" title="Has fill-in variables">
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-primary bg-primary/10 rounded-md px-1.5 py-0.5" title="Has fill-in variables">
                   <Sparkles className="h-3 w-3" /> vars
                 </span>
               )}
               <button onClick={actions.toggleFavorite} aria-label="Toggle favorite" className="shrink-0">
                 <Star
-                  className={`h-5 w-5 transition-colors ${
+                  className={`h-[18px] w-[18px] transition-colors ${
                     prompt.is_favorite
                       ? "fill-primary text-primary"
-                      : "text-foreground/20 hover:text-primary"
+                      : "text-foreground/25 hover:text-primary"
                   }`}
                   strokeWidth={1.75}
                 />
@@ -221,11 +223,12 @@ export function PromptCard({ prompt, onUpdate, categories, startInEdit = false }
             className="text-left group/title"
             aria-label={`Open “${prompt.title}”`}
           >
-            <h3 className="font-display text-lg sm:text-xl font-bold mb-2 leading-tight group-hover/title:text-primary transition-colors inline-flex items-center gap-1.5">
+            <h3 className="font-display text-[22px] sm:text-2xl font-semibold mb-2.5 leading-[1.15] text-foreground group-hover/title:text-primary transition-colors inline-flex items-baseline gap-1.5">
               {prompt.title}
-              <Maximize2 className="h-3.5 w-3.5 text-foreground/30 opacity-0 group-hover/title:opacity-100 transition-opacity" />
+              <Maximize2 className="h-3 w-3 text-foreground/30 opacity-0 group-hover/title:opacity-100 transition-opacity self-center" />
             </h3>
           </button>
+
 
           <button
             onClick={() => setDetailOpen(true)}
@@ -259,10 +262,10 @@ export function PromptCard({ prompt, onUpdate, categories, startInEdit = false }
                 onClick={primaryCopy}
                 aria-label={promptHasVars ? "Fill in variables and copy" : actions.copied ? "Copied" : "Copy prompt"}
                 title={promptHasVars ? "Fill in variables" : "Copy"}
-                className={`p-2 rounded-xl transition-all ${
+                className={`p-2 rounded-lg transition-all ${
                   actions.copied
                     ? "bg-primary text-primary-foreground"
-                    : "bg-secondary/60 text-primary hover:bg-primary hover:text-primary-foreground"
+                    : "bg-secondary text-foreground/75 hover:bg-primary hover:text-primary-foreground"
                 }`}
               >
                 {actions.copied ? (
@@ -278,7 +281,7 @@ export function PromptCard({ prompt, onUpdate, categories, startInEdit = false }
                 <DropdownMenuTrigger asChild>
                   <button
                     aria-label="More actions"
-                    className="p-2 bg-secondary/60 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all"
+                    className="p-2 bg-secondary text-foreground/75 rounded-lg hover:bg-primary hover:text-primary-foreground transition-all"
                   >
                     <Share2 className="h-4 w-4" strokeWidth={1.75} />
                   </button>
@@ -315,7 +318,7 @@ export function PromptCard({ prompt, onUpdate, categories, startInEdit = false }
               <button
                 onClick={() => setEditing(true)}
                 aria-label="Edit prompt"
-                className="p-2 bg-secondary/60 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all"
+                className="p-2 bg-secondary text-foreground/75 rounded-lg hover:bg-primary hover:text-primary-foreground transition-all"
               >
                 <Pencil className="h-4 w-4" strokeWidth={1.75} />
               </button>
@@ -323,10 +326,10 @@ export function PromptCard({ prompt, onUpdate, categories, startInEdit = false }
                 onClick={handleDeleteClick}
                 aria-label={confirmDelete ? "Confirm delete" : "Delete prompt"}
                 title={confirmDelete ? "Click again to confirm" : "Delete prompt"}
-                className={`p-2 rounded-xl transition-all ${
+                className={`p-2 rounded-lg transition-all ${
                   confirmDelete
                     ? "bg-destructive text-destructive-foreground"
-                    : "bg-secondary/60 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    : "bg-secondary text-foreground/60 hover:bg-destructive hover:text-destructive-foreground"
                 }`}
               >
                 {confirmDelete ? (
@@ -336,6 +339,7 @@ export function PromptCard({ prompt, onUpdate, categories, startInEdit = false }
                 )}
               </button>
             </div>
+
           </div>
 
           <PromptDetailDialog

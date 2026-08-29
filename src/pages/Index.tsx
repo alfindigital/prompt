@@ -14,8 +14,9 @@ import {
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { Header } from "@/components/Header";
+import { TopNav } from "@/components/TopNav";
 import { BottomBar } from "@/components/BottomBar";
+import { CategoryRail } from "@/components/CategoryRail";
 import { QuickAddForm } from "@/components/QuickAddForm";
 import { SearchFilterBar } from "@/components/SearchFilterBar";
 import { SortablePromptCard } from "@/components/SortablePromptCard";
@@ -25,21 +26,37 @@ import { FillVariablesDialog } from "@/components/FillVariablesDialog";
 import { SharedPromptDialog } from "@/components/SharedPromptDialog";
 import { TagManager } from "@/components/TagManager";
 import { ImportTextDialog } from "@/components/ImportTextDialog";
-import { SnapshotsDialog } from "@/components/SnapshotsDialog";
+
 
 import {
   getPrompts, getAllTags, getCategories, reorderPrompts, deletePrompts, addPrompt,
   markUsed, bulkSetCategory, bulkAddTags, bulkSetFavorite, restorePrompts,
   getCategoryWithDescendants, exportPrompts, importPrompts,
 } from "@/lib/prompts-store";
-import { maybeSnapshot, markExported } from "@/lib/backup";
+import { markExported } from "@/lib/backup";
 import { loadStarterPack } from "@/lib/starter-prompts";
 import { decodeSharedPrompt, type SharedPromptPayload } from "@/lib/share";
 import { hasVariables } from "@/lib/variables";
 import { isDark, toggleTheme as toggleThemeFn } from "@/lib/theme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, CheckSquare, Check, Search, Star, X, ArrowUpDown } from "lucide-react";
+import { Trash2, CheckSquare, Check, Star, X, ArrowUpDown, ArrowDownAZ, CalendarDays, Clock, Flame, ListOrdered } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+const SORT_META: Record<SortOption, { label: string; hint: string; icon: typeof ArrowUpDown }> = {
+  default: { label: "Manual order", hint: "Your custom drag order", icon: ListOrdered },
+  name: { label: "Name", hint: "A to Z", icon: ArrowDownAZ },
+  date: { label: "Newest", hint: "Recently created first", icon: CalendarDays },
+  recent: { label: "Recently used", hint: "Last copied first", icon: Clock },
+  used: { label: "Most used", hint: "Highest use count", icon: Flame },
+};
 import { toast } from "sonner";
 import type { Prompt } from "@/lib/types";
 
@@ -72,7 +89,7 @@ const Index = () => {
   const [sharedPayload, setSharedPayload] = useState<SharedPromptPayload | null>(null);
   const [tagManagerOpen, setTagManagerOpen] = useState(false);
   const [importTextOpen, setImportTextOpen] = useState(false);
-  const [snapshotsOpen, setSnapshotsOpen] = useState(false);
+  
   const [themeDark, setThemeDark] = useState(false);
 
   const hydratedRef = useRef(false);
@@ -103,7 +120,6 @@ const Index = () => {
       else toast.error("Invalid share link");
     }
 
-    maybeSnapshot();
     hydratedRef.current = true;
   }, []);
 
@@ -351,7 +367,19 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header onBrandClick={() => handleTabChange("prompts")} />
+      <TopNav
+        search={search}
+        onSearchChange={setSearch}
+        onNewPrompt={handleNewPrompt}
+        onBrandClick={() => handleTabChange("prompts")}
+        themeDark={themeDark}
+        onToggleTheme={handleToggleTheme}
+        onExport={handleExport}
+        onImport={handleImportClick}
+        onImportText={() => setImportTextOpen(true)}
+        onManageTags={() => setTagManagerOpen(true)}
+        searchInputRef={topSearchRef}
+      />
 
       <input
         ref={fileRef}
@@ -362,66 +390,30 @@ const Index = () => {
         onChange={handleImportFile}
       />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-5 sm:pt-6 pb-32 sm:pb-36" aria-label="Prompt library">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-5 sm:pt-6 pb-28 sm:pb-16" aria-label="Prompt library">
+        <h1 className="sr-only sm:hidden">Promptly — AI Prompt Library</h1>
         {activeTab === "add" ? (
           <div key="add" className="animate-enter">
             <QuickAddForm onAdd={() => { refresh(); setActiveTab("prompts"); }} defaultCategory={selectedCategory} forceExpanded />
           </div>
         ) : (
           <div key="prompts" className="animate-enter space-y-5">
+            {prompts.length > 0 && (
+              <CategoryRail
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onSelectCategory={setSelectedCategory}
+                onDataChange={refresh}
+                totalCount={prompts.length}
+              />
+            )}
+
 
 
 
             {prompts.length > 0 && (
-              <div className="rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm px-3 py-2.5 sm:px-4 sm:py-3 space-y-3">
-                {/* Search + compact icon controls */}
-                <div className="flex items-center gap-2">
-                  <div className="relative flex-1 min-w-0">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none" strokeWidth={1.75} />
-                    <Input
-                      ref={topSearchRef}
-                      type="search"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Search prompts…"
-                      aria-label="Search prompts"
-                      className="h-9 pl-9 rounded-xl text-sm"
-                    />
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <label
-                      className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors cursor-pointer focus-within:ring-2 focus-within:ring-primary/30"
-                      aria-label="Sort prompts"
-                      title="Sort prompts"
-                    >
-                      <ArrowUpDown className="h-4 w-4" strokeWidth={1.75} />
-                      <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value as SortOption)}
-                        aria-label="Sort prompts"
-                        className="absolute inset-0 opacity-0 cursor-pointer"
-                      >
-                        <option value="default">Manual order</option>
-                        <option value="name">Name A-Z</option>
-                        <option value="date">Newest</option>
-                        <option value="recent">Recently used</option>
-                        <option value="used">Most used</option>
-                      </select>
-                    </label>
-                    <Button
-                      size="icon"
-                      variant={selectMode ? "secondary" : "ghost"}
-                      className="h-9 w-9 rounded-xl"
-                      aria-label={selectMode ? "Cancel selection" : "Select prompts"}
-                      title={selectMode ? "Cancel selection" : "Select prompts"}
-                      onClick={() => { setSelectMode(!selectMode); setSelectedIds(new Set()); }}
-                    >
-                      <CheckSquare className="h-4 w-4" strokeWidth={1.75} />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex-1 min-w-0 flex flex-wrap items-center gap-x-3 gap-y-2">
                   <SearchFilterBar
                     allTags={allTags}
                     selectedTags={selectedTags}
@@ -430,12 +422,71 @@ const Index = () => {
                     )}
                     onClearTags={() => setSelectedTags([])}
                   />
-                  <span className="text-[11px] font-semibold text-foreground/55 uppercase tracking-wider shrink-0">
-                    {filtered.length} prompt{filtered.length !== 1 ? "s" : ""}
+                </div>
+                <div className="hidden sm:flex items-center gap-1.5 shrink-0">
+                  <span className="text-[11px] font-semibold text-foreground/50 uppercase tracking-[0.16em] mr-1 tabular-nums">
+                    {filtered.length} {filtered.length === 1 ? "result" : "results"}
                   </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Sort prompts"
+                        title={`Sort: ${SORT_META[sortBy].label}`}
+                        className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-card border border-border text-foreground/70 hover:text-foreground hover:border-primary/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 data-[state=open]:border-primary/50 data-[state=open]:text-primary"
+                      >
+                        <ArrowUpDown className="h-4 w-4" strokeWidth={1.75} />
+                        {sortBy !== "default" && (
+                          <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-primary" />
+                        )}
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" sideOffset={8} className="w-60 p-1.5 rounded-xl border-border/70 shadow-lg">
+                      <DropdownMenuLabel className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/50">
+                        Sort by
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator className="my-1" />
+                      {SORT_OPTIONS.map((opt) => {
+                        const meta = SORT_META[opt];
+                        const Icon = meta.icon;
+                        const active = sortBy === opt;
+                        return (
+                          <DropdownMenuItem
+                            key={opt}
+                            onClick={() => setSortBy(opt)}
+                            className={`flex items-start gap-2.5 rounded-lg px-2 py-2 cursor-pointer focus:bg-primary/10 ${active ? "bg-primary/8" : ""}`}
+                          >
+                            <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border ${active ? "border-primary/40 bg-primary/10 text-primary" : "border-border bg-card text-foreground/70"}`}>
+                              <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
+                            </span>
+                            <span className="flex-1 min-w-0">
+                              <span className={`block text-sm leading-tight ${active ? "font-semibold text-foreground" : "text-foreground/90"}`}>
+                                {meta.label}
+                              </span>
+                              <span className="block text-[11px] text-foreground/50 leading-tight mt-0.5">
+                                {meta.hint}
+                              </span>
+                            </span>
+                            {active && <Check className="h-4 w-4 text-primary mt-1" strokeWidth={2} />}
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={`h-9 w-9 rounded-lg border ${selectMode ? "bg-ink text-ink-foreground border-transparent hover:bg-ink/90 hover:text-ink-foreground" : "bg-card border-border text-foreground/70 hover:text-foreground hover:border-primary/40"}`}
+                    aria-label={selectMode ? "Cancel selection" : "Select prompts"}
+                    title={selectMode ? "Cancel selection" : "Select prompts"}
+                    onClick={() => { setSelectMode(!selectMode); setSelectedIds(new Set()); }}
+                  >
+                    <CheckSquare className="h-4 w-4" strokeWidth={1.75} />
+                  </Button>
                 </div>
               </div>
             )}
+
 
             {/* Bulk action bar */}
             {selectMode && selectedIds.size > 0 && (
@@ -525,7 +576,9 @@ const Index = () => {
         )}
       </main>
 
+      {/* Mobile action dock — all action buttons move to bottom on small screens */}
       <BottomBar
+        className="sm:hidden"
         activeTab={activeTab}
         onTabChange={handleTabChange}
         onDataChange={refresh}
@@ -540,9 +593,16 @@ const Index = () => {
         onImport={handleImportClick}
         onImportText={() => setImportTextOpen(true)}
         onManageTags={() => setTagManagerOpen(true)}
-        onRestoreSnapshots={() => setSnapshotsOpen(true)}
         onOpenPalette={() => setPaletteOpen(true)}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        selectMode={selectMode}
+        onToggleSelect={() => {
+          setSelectMode((v) => !v);
+          setSelectedIds(new Set());
+        }}
       />
+
 
       <CommandPalette
         open={paletteOpen}
@@ -571,7 +631,7 @@ const Index = () => {
       <SharedPromptDialog payload={sharedPayload} onSave={saveShared} onDismiss={dismissShared} />
       <TagManager open={tagManagerOpen} onOpenChange={setTagManagerOpen} onUpdate={refresh} version={version} />
       <ImportTextDialog open={importTextOpen} onOpenChange={setImportTextOpen} onUpdate={refresh} />
-      <SnapshotsDialog open={snapshotsOpen} onOpenChange={setSnapshotsOpen} onUpdate={refresh} />
+      
     </div>
   );
 };

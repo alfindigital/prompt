@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://promlib.lovable.app/sitemap.xml
+Sitemap: https://prolib.alfindigital.com/sitemap.xml

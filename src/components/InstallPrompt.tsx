@@ -37,7 +37,7 @@ export function InstallPrompt() {
           <p className="text-xs text-muted-foreground">Quick access from your home screen</p>
         </div>
         <Button size="sm" onClick={handleInstall}>Install</Button>
-        <button onClick={() => setDismissed(true)} className="text-muted-foreground hover:text-foreground">
+        <button onClick={() => setDismissed(true)} aria-label="Dismiss install prompt" className="text-muted-foreground hover:text-foreground">
           <X className="h-4 w-4" />
         </button>
       </div>

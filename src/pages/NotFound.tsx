@@ -17,7 +17,7 @@ const NotFound = () => {
         <meta property="og:title" content="Page Not Found — Promptly" />
         <meta property="og:description" content="The page you're looking for doesn't exist. Head back to your Promptly prompt library." />
         <meta name="robots" content="noindex" />
-        <link rel="canonical" href="https://promlib.lovable.app/" />
+        <link rel="canonical" href={`https://prolib.alfindigital.com${location.pathname}`} />
       </Helmet>
       <main className="flex min-h-screen items-center justify-center bg-muted">
         <div className="text-center">

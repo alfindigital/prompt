@@ -47,7 +47,7 @@ export function FillVariablesDialog({ open, onOpenChange, title, content, onCopi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg rounded-2xl">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-lg rounded-2xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
           <DialogTitle className="font-display">Fill in variables</DialogTitle>
           <DialogDescription>

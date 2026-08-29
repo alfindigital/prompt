@@ -161,7 +161,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
                 className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium"
               >
                 {tag}
-                <button type="button" onClick={() => removeTag(tag)} className="hover:text-destructive">
+                <button type="button" onClick={() => removeTag(tag)} aria-label={`Remove tag ${tag}`} className="hover:text-destructive">
                   <X className="h-3 w-3" />
                 </button>
               </span>
@@ -201,6 +201,7 @@ export function QuickAddForm({ onAdd, defaultCategory = null, forceExpanded = fa
           <select
             value={categoryId || ""}
             onChange={(e) => setCategoryId(e.target.value || null)}
+            aria-label="Category"
             className="text-sm rounded-xl border border-input bg-background px-3 py-2 text-foreground w-full sm:w-auto"
           >
             <option value="">No category</option>

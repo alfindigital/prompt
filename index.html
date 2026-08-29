@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="google-site-verification" content="f8c-Vx8VzWL_3E1ORcBaRZRkIqbirnpqMAYCSU6VER0" />
+    <meta name="google-site-verification" content="J-Czc4w4Dto_XXTUZfW8lAMoT45CpTWqZ72Nt91yFbw" />
     <title>Promptly — AI Prompt Library</title>
     <meta name="description" content="Promptly is a fast, local-first AI prompt library. Save, tag, categorize, search, and reuse your prompts — right in your browser. No sign-up.">
     <meta name="author" content="Promptly" />
     <link rel="canonical" href="https://promlib.lovable.app/" />
 
     <!-- Theme color tracks light/dark -->
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#7c5cff" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d0a1a" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#5a1fbf" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#120e1c" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -21,10 +21,10 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
 
-    <!-- Fonts: preconnect + reduced weights -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@600;700;800&family=Epilogue:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://promlib.lovable.app/" />
@@ -106,12 +106,11 @@
     }
   </script>
   <script>
-    // Apply saved/system theme before paint to avoid a flash and persist dark mode across reloads.
+    // Default to light mode. Only switch to dark if the user explicitly chose it.
     (function () {
       try {
         var stored = localStorage.getItem("theme");
-        var dark = stored === "dark" || (!stored && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-        if (dark) document.documentElement.classList.add("dark");
+        if (stored === "dark") document.documentElement.classList.add("dark");
       } catch (e) {}
     })();
   </script>
